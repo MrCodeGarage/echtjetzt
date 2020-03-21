@@ -32,8 +32,8 @@ phases:
       - aws --version
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
       # check, who runs the build and get the environment
-      - BRANCH_NAME=$(echo $CODEBUILD_INITIATOR | cut -d "-" -f 4)
-      - APPLICATION_NAME=$(echo $CODEBUILD_INITIATOR | cut -d "-" -f 3)
+      - BRANCH_NAME=kifakenews
+      - APPLICATION_NAME=kifakenews
       - REPOSITORY_URI=191014696307.dkr.ecr.eu-central-1.amazonaws.com/ki
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=$BRANCH_NAME}
