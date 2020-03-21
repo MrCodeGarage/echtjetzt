@@ -1,22 +1,115 @@
-<ion-header [translucent]="true">
-    <ion-toolbar>
-        <ion-title>
-            Willkommen zu Echtjetzt
-        </ion-title>
-    </ion-toolbar>
+<ion-header class="dekstop" [translucent]="true">
+    <div class="logoheader middle">
+        <div>
+            Logo
+        </div>
+        <h1>Echtjetzt</h1>
+    </div>
 </ion-header>
+<ion-content class="dekstop">
+    <div class="searchContainer middle">
+        <div>
+            <textarea></textarea>
+        </div>
+        <div>
 
-<ion-content padding>
-    <ion-item>
-        <ion-label position="stacked">Möchten Sie eine Webseite auf ihre Authenzitität prüfen ?</ion-label>
-        <ion-input></ion-input>
-    </ion-item>
-    <ion-item>
-        <ion-label position="stacked">Möchten Sie einen Text auf ihre Authenzitität prüfen ?</ion-label>
-        <ion-textarea rows="6" cols="20"></ion-textarea>
-    </ion-item>
-    <ion-button expand="full">Jetzt Prüfen</ion-button>
+        </div>
+    </div>
+    <div>
 
-
+    </div>
 
 </ion-content>
+<ion-footer class="dekstop">
+
+</ion-footer>
+<ion-header class="mobile">
+    <div class="logoheader">
+        <div>
+            <img src="/assets/EchtJetztLogoSchrift.svg" />
+        </div>
+        <div>
+            <i class="mdi mdi-help-circle-outline mdi-36px"></i>
+        </div>
+
+    </div>
+</ion-header>
+<ion-content class="mobile mobilemain">
+    <div>
+        <div>
+            <div *ngIf="switchLongText === false">
+                <input (input)="onChange()" [(ngModel)]="inputText" placeholder="Text oder URL einfügen" />
+                <ion-button class="cpm" fill="clear">
+                    <i class="mdi mdi-plus-circle-outline mdi-18px"></i>
+                </ion-button>
+            </div>
+            <div class="longTextArea" *ngIf="switchLongText === true">
+                <textarea [(ngModel)]="inputText">
+
+                </textarea>
+            </div>
+        </div>
+        <div>
+            <ion-button (click)="switchLongText = !switchLongText" class="cpm" fill="clear">
+                <i class="mdi mdi-chevron-down mdi-48px"></i>
+            </ion-button>
+        </div>
+        <div *ngIf="switchResult == 1">
+            <div>
+                Überprüfen Sie kostenlos Texte über Corona/Corvid 19 auf ihren Wahrheitsgehalt.
+            </div>
+
+            <ion-button class="cpm" fill="clear">
+                <i class="mdi mdi-content-copy mdi-24px"></i>
+            </ion-button>
+            <ion-button class="csm" fill="clear">
+                <i class="mdi mdi-share-variant mdi-24px"></i>
+            </ion-button>
+        </div>
+        <div class="loaderCls" *ngIf="switchResult == 2">
+            placeholder :) Loader
+        </div>
+        <div class="styleOutput" *ngIf="switchResult == 3">
+            <div>
+                <div class="radialProgressBar progress-{{answer.percent}}">
+                    <div class="overlay">{{answer.percent}}%</div>
+                </div>
+            </div>
+            <div>
+                Dieses Information ist zu {{answer.percent}}% vertrauens-würdig, weil sie mit Folgenden Quellen übereinstimmt:
+            </div>
+            <div class="link" *ngFor="let item of answer.quellen">
+                <h2><span>Quelle {{item.quelle}} ({{item.link}})</span></h2>
+                <div>
+                    <div [style.width.%]="answer.percent">
+
+                    </div>
+                </div>
+                <label>Stand {{item.stand | date:'dd.MM.yyyy HH:mm'}}</label>
+            </div>
+
+            <ion-button class="cpm" fill="clear">
+                <i class="mdi mdi-content-copy mdi-24px"></i>
+            </ion-button>
+            <ion-button class="csm" fill="clear">
+                <i class="mdi mdi-share-variant mdi-24px"></i>
+            </ion-button>
+
+        </div>
+    </div>
+</ion-content>
+<ion-footer class="mobile">
+    <div>
+        <div>
+            <label>Datenschutz</label>
+        </div>
+        <div>
+            <label>AGB</label>
+        </div>
+        <div>
+            <label>Impressum</label>
+        </div>
+    </div>
+
+</ion-footer>
+<img class="mybgh" src="/assets/oval.svg" />
