@@ -1,0 +1,49 @@
+#!/usr/bin/env perl
+use Mojolicious::Lite;
+
+plugin 'Config' => { default => {} };
+
+# Run on startip
+hook 'before_server_start' => sub {
+  my ($server, $app) = @_;
+
+  # Create in-memory map of credible sources
+  # based on the pages to crawl
+  my $pages = $app->config('pages') // [];
+  my $credible = $app->config('credible') // {};
+  foreach (@$pages) {
+    my $source = Mojo::URL->new($_->{url})->host;
+
+    # Always take the lowest credibility value,
+    # if already set - otherwise set
+    if (!exists($credible->{$source})
+          || $credible->{$source} > $_->{cred}) {
+
+      $credible->{$source} = $_->{cred};
+    }
+  };
+
+  # Reset list of credible sources
+  $app->config(credible => $credible);
+};
+
+
+# Get the credibility score of a source
+helper 'get_credibility' => sub {
+  my ($c, $url) = @_;
+  my $source = Mojo::URL->new($url)->host;
+  return $c->config('credible')->{$source} // 0.0;
+};
+
+
+# Return the credibility score of a source
+get '/credibility' => sub {
+  my $c = shift;
+  my $url = $c->param('url');
+  $c->render(json => {
+    url => $url,
+    score => $c->get_credibility($url)
+  });
+};
+
+app->start;
