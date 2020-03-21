@@ -64,7 +64,7 @@ phases:
          echo '['
          echo ' {'
          echo '    "name": "'$APPLICATION_NAME'-'$BRANCH_NAME'-container",'
-         echo '    "imageUri": "'$REPOSITORY_URI':'$BRANCH_NAME'"'
+         echo '    "imageUri": "'$REPOSITORY_URI':'latest'"'
          echo ' }'
          echo ']'
         } > imagedefinitions.json
