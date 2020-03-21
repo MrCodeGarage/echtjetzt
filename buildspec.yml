@@ -1,0 +1,77 @@
+# buildspec.yaml
+# This file is for CodeBuild as job discription. It installs the runtime(s) runs one phase after each other to build and push a docker image.
+
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+      nodejs: 10 #so far, only 10 or 8
+    commands:
+      - echo Installing Backend dependencies...
+      - curl https://install.meteor.com/ | sh
+      - echo Installing Frontend dependencies...
+      - echo Removing old dependencies---
+      - rm -rf api/node_modules
+      - export TOOL_NODE_FLAGS=--max-old-space-size=4096
+      # - rm -f (file.a file.b file.c) #Check if this works
+      - echo Adding new symlinks...
+      - cd ./api
+      - npm install --no-progress
+      - cd ../
+      #      - npm install #check if needed!!!
+      - npm install --no-progress # check if "build:prod" has to be activated
+      - npm install ionic -g
+      - npm install -g meteor-client-bundler
+      - cp -rf meteor-client.js ./node_modules/meteor-client.js
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+      # check, who runs the build and get the environment
+      - BRANCH_NAME=$(echo $CODEBUILD_INITIATOR | cut -d "-" -f 4)
+      - APPLICATION_NAME=$(echo $CODEBUILD_INITIATOR | cut -d "-" -f 3)
+      - REPOSITORY_URI=191014696307.dkr.ecr.eu-central-1.amazonaws.com/ki
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=$BRANCH_NAME}
+  build:
+    commands:
+      - cd ./api
+      - TOOL_NODE_FLAGS="--max_old_space_size=4096 --min_semi_space_size=8 --max_semi_space_size=256" meteor build  ../build --architecture os.linux.x86_64 --server-only --allow-superuser;
+      - cd ../
+      - ionic build --aot --service-worker
+      - mkdir ./build/www
+      - cp -rf ./www/* ./build/www;
+      # - cd ./build Docker
+      - echo Building the Docker image...
+      - docker build -t $REPOSITORY_URI:$BRANCH_NAME ./build
+      # Tag the built image
+      - docker tag $REPOSITORY_URI:$BRANCH_NAME $REPOSITORY_URI:$IMAGE_TAG
+
+  post_build:
+    commands:
+      - echo Build completed on $(date)
+      - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:$BRANCH_NAME
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Creating Image Definitions File for current $BRANCH_NAME stage #has to be done here so we can have $param in json
+      - | #readability
+        {
+         echo '['
+         echo ' {'
+         echo '    "name": "'$APPLICATION_NAME'-'$BRANCH_NAME'-container",'
+         echo '    "imageUri": "'$REPOSITORY_URI':'$BRANCH_NAME'"'
+         echo ' }'
+         echo ']'
+        } > imagedefinitions.json
+    finally:
+      - echo cleaning up
+      # - delete old Container Images and Artifacts
+
+artifacts:
+  files:
+    - "build/*"
+    - imagedefinitions.json
+  # base-directory: build

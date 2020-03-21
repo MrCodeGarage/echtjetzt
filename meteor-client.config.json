@@ -1,0 +1,10 @@
+{
+    "runtime": {
+        "DDP_DEFAULT_CONNECTION_URL": "https://localtest.code-garage-solutions.de",
+        "ROOT_URL": "https://localtest.code-garage-solutions.de",
+        "autoupdate": {
+            "versions": {}
+        }
+    },
+    "generateNodeModules": true
+}
