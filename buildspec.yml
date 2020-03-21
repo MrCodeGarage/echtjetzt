@@ -41,7 +41,7 @@ phases:
       - cd ./api
       - TOOL_NODE_FLAGS="--max_old_space_size=4096 --min_semi_space_size=8 --max_semi_space_size=256" meteor build  ../build --architecture os.linux.x86_64 --server-only --allow-superuser;
       - cd ../
-      - ionic build --aot --service-worker
+      - ionic build --prod
       - mkdir ./build/www
       - cp -rf ./www/* ./build/www;
       # - cd ./build Docker
