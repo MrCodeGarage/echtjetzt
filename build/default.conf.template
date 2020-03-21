@@ -1,6 +1,4 @@
-Bearbeiten
-Es sind keine Zeilen ausgewählt.
-  map $http_upgrade $connection_upgrade {
+map $http_upgrade $connection_upgrade {
   default upgrade;
   '' close;
   }
