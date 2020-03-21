@@ -171,7 +171,7 @@ get '/clean' => sub ($c) {
 
 
 # Store the clean data of a url
-post '/clean/:id' => sub {
+post '/clean/:id' => sub ($c) {
   # TODO:
   #   Validate input
   # TODO:
@@ -212,9 +212,6 @@ post '/add' => sub ($c) {
 };
 
 app->start;
-
-
-1;
 
 
 __END__

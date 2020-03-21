@@ -1,4 +1,3 @@
-#!/usr/bin/env perl
 #===============================================================================
 #
 #         FILE: crawl_infektionsschutz.pl
@@ -18,6 +17,7 @@
 #     REVISION: ---
 #  Last Change: 2020-03-21, 23:32:27 (+01:00)
 #===============================================================================
+package DataService::Clean::Base;
 
 use strict;
 use warnings;
@@ -45,12 +45,12 @@ my $ua = HTTP::Tiny->new();
 
 use Data::Dump qw/dump/;
 
-my %DISPATCH = (
-    "www.infektionsschutz.de" => [
-        \&clean_infektionsschutz,
-        \&get_main,
-        \&finish]
-);
+# my %DISPATCH = (
+#     "www.infektionsschutz.de" => [
+#         \&clean_infektionsschutz,
+#         \&get_main,
+#         \&finish]
+# );
 
 # process a document
 sub get_document($url_string, $recursive) {
@@ -80,8 +80,8 @@ sub get_base($url) {
     return $url->scheme() . "://" . $url->host();
 }
 
-sub is_local_link($url_string, $domain, ) {
-    my $base = get_base($domain);
+sub is_local_link($url_string, $domain) {
+    my $base = get_base(URI->new($domain));
     my $rel_url = URI->new($url_string)->rel($base);
     my $url = URI->new($url_string)->abs($base);
     if ($url =~ m/$base/) {
@@ -130,7 +130,7 @@ sub finish($params) {
         $plain->process($params->{html}->to_string()));
 
     my $html_string =  $moderate->process($params->{html}->to_string);
-    $params->{html};
+    # $params->{html};
     my $dom = Mojo::DOM->new;
     my $html_dom = $dom->parse("<main></main>");
     $html_dom->content($html_string);
@@ -156,4 +156,6 @@ sub get_main($params) {
     return $params;
 }
 
-dump get_document("https://www.infektionsschutz.de/coronavirus/", 0);
+# dump get_document("https://www.infektionsschutz.de/coronavirus/", 0);
+
+1;
