@@ -21,6 +21,7 @@ phases:
       - npm install --no-progress
       - cd ../
       #      - npm install #check if needed!!!
+      - npm run preinstall
       - npm install --no-progress # check if "build:prod" has to be activated
       - npm install ionic -g
       - npm install -g meteor-client-bundler
