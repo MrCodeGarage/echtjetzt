@@ -1,11 +1,11 @@
-#!/usr/bin/env perl 
+#!/usr/bin/env perl
 #===============================================================================
 #
 #         FILE: crawl_infektionsschutz.pl
 #
-#        USAGE: ./crawl_infektionsschutz.pl  
+#        USAGE: ./crawl_infektionsschutz.pl
 #
-#  DESCRIPTION: 
+#  DESCRIPTION:
 #
 #      OPTIONS: ---
 # REQUIREMENTS: ---
@@ -16,7 +16,7 @@
 #      VERSION: 1.0
 #      CREATED: 2020-03-21, 17:03:33 (CET)
 #     REVISION: ---
-#  Last Change: 2020-03-21, 17:50:37 (CET)
+#  Last Change: 2020-03-21, 18:18:43 (CET)
 #===============================================================================
 
 use strict;
@@ -64,6 +64,11 @@ sub get_text($url) {
   }
 }
 
+sub get_links($params) {
+    $params->{links} = $params->{html}->find("a")->map(attr => "src")->compact()->to_array();
+    return $params;
+}
+
 sub strip($params) {
     my $plain = HTML::Restrict->new();
     my $moderate = HTML::Restrict-> new([
@@ -87,13 +92,4 @@ sub get_main($params) {
     $params->{html} = $main;
     return $params;
 }
-
-sub clean_infektionsschutz($params) {
-
-    
-}
-
-__END__
-
-
 
