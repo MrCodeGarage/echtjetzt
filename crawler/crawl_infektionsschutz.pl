@@ -16,7 +16,7 @@
 #      VERSION: 1.0
 #      CREATED: 2020-03-21, 17:03:33 (CET)
 #     REVISION: ---
-#  Last Change: 2020-03-21, 21:01:03 (CET)
+#  Last Change: 2020-03-21, 22:23:12 (CET)
 #===============================================================================
 
 use strict;
@@ -98,6 +98,13 @@ sub get_links($params) {
     return $params;
 }
 
+sub normalize_space($text) {
+    $text =~ s/\s+/ /gm;
+    $text =~ s/^\s+//;
+    $text =~ s/\s+$//;
+    return $text;
+}
+
 # get plain text and simple HTML
 sub strip($params) {
     my $plain = HTML::Restrict->new();
@@ -116,10 +123,14 @@ sub strip($params) {
 
 # heuristically get a main part and remove navigation panels
 sub get_main($params) {
+
+    # try to get typical main content:
     my $main = $params->{html}->at('main') //
     $params->{html}->at('div[class=main]') //
     $params->{html}->at('div[class=content]');
     $params->{html} = $main;
+
+    # no navigation, please:
     $main->find("nav")->map(sub{$_->remove});
     $main->find("*[class=nav]")->map(sub{$_->remove});
     $main->find("*[class=navigation]")->map(sub{$_->remove});
