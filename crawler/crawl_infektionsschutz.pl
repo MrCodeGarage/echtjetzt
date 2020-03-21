@@ -16,7 +16,7 @@
 #      VERSION: 1.0
 #      CREATED: 2020-03-21, 17:03:33 (CET)
 #     REVISION: ---
-#  Last Change: 2020-03-21, 23:27:31 (+01:00)
+#  Last Change: 2020-03-21, 23:32:27 (+01:00)
 #===============================================================================
 
 use strict;
@@ -118,17 +118,24 @@ sub finish($params) {
         }
     );
     $params->{html}->find("script,stylesheet")->each(sub { $_->remove()});
+
+    # normalize <i>/<b>
     $params->{html}->find("i")->each(sub {$_->tag("em")});
-    $params->{html}->find("b")->each(sub {$_->tag("strongs")});
+    $params->{html}->find("b")->each(sub {$_->tag("strong")});
+
+    # remove empty elements
     $params->{html}->find("*")->each(sub {if ($_->all_text() =~ m/\A\s*\Z/m){ $_->remove()}});
+
     $params->{text} = normalize_space(
         $plain->process($params->{html}->to_string()));
+
     my $html_string =  $moderate->process($params->{html}->to_string);
     $params->{html};
     my $dom = Mojo::DOM->new;
     my $html_dom = $dom->parse("<main></main>");
     $html_dom->content($html_string);
     $params->{html} = $html_dom->to_string();
+
     return $params;
 }
 
