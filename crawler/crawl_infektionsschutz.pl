@@ -16,7 +16,7 @@
 #      VERSION: 1.0
 #      CREATED: 2020-03-21, 17:03:33 (CET)
 #     REVISION: ---
-#  Last Change: 2020-03-21, 20:51:38 (CET)
+#  Last Change: 2020-03-21, 21:01:03 (CET)
 #===============================================================================
 
 use strict;
@@ -58,16 +58,22 @@ sub get_document($url_string, $recursive) {
   my $response = $ua->get($url);
   if ($response->{success}) {
       my $tree = Mojo::DOM -> new($response->{content});
-      my $doc = get_main({
+      my $doc = get_main(get_meta({
               url => $url,
               html => $tree,
               recursive => $recursive,
-              links => [],
-              metadata => [],
+              external_links => [],
+              internal_links => [],
+              metadata => {},
               header => $response->{headers},
-          });
+          }));
       $doc = get_links($doc);
   }
+}
+
+sub get_meta($params) {
+    $params->{metadata}->{title} = $params->{html}->at("title")->all_text();
+    return $params;
 }
 
 sub get_base($url) {
@@ -120,4 +126,4 @@ sub get_main($params) {
     return $params;
 }
 
-get_document("https://www.infektionsschutz.de/coronavirus/", 0);
+dump get_document("https://www.infektionsschutz.de/coronavirus/", 0);
