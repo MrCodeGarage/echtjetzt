@@ -1,9 +1,14 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 use Mojo::Base -signatures;
+use Mojo::CSV;
+
+our $VERSION = 0.01;
 
 plugin 'Config' => {
-  default => {}
+  default => {
+    pageFile => app->home->child('Data', 'Linkliste_KIvsVirus.csv')->to_string
+  }
 };
 
 
@@ -13,6 +18,24 @@ hook 'before_server_start' => sub ($server, $app) {
   # Create in-memory map of credible sources
   # based on the pages to crawl
   my $pages = $app->config('pages') // [];
+
+  # In addition to the config file (maybe instead)
+  # crawl the CSV file with pages to crawl
+  if (my $page_file = $app->config('pageFile')) {
+    my $data = Mojo::CSV->new->slurp_body($page_file);
+
+    # Add each page to the config
+    $data->each(
+      sub {
+        push @$pages, {
+          url => $_->[1],
+          cred => $_->[3],
+          freq => ''
+        };
+      }
+    );
+  };
+
   my $credible = $app->config('credible') // {};
   foreach (@$pages) {
     my $source = Mojo::URL->new($_->{url})->host;
@@ -98,6 +121,8 @@ helper 'clean' => sub ($c, $cascade, $res) {
 
 # Return the credibility score of a source
 get '/credibility' => sub ($c) {
+  # TODO:
+  #   Validate input
   my $url = $c->param('url');
   $c->render(json => {
     url => $url,
@@ -108,6 +133,8 @@ get '/credibility' => sub ($c) {
 
 # Return the clean data of a url
 get '/clean' => sub ($c) {
+  # TODO:
+  #   Validate input
   # TODO:
   #   Ensure this is an absolue URL
   my $url = $c->param('url');
@@ -124,6 +151,20 @@ get '/clean' => sub ($c) {
     #   use base cleaner cascade
     json => $c->clean([sub { return $_[0] } ], $res)
   );
+};
+
+
+# Add a new base doc to the list
+post '/add' => sub ($c) {
+
+  # TODO:
+  #   Validate input
+  my $baseurl = $c->param('baseurl');
+  my $cred = $c->param('cred');
+  my $freq = $c->param('freq');
+
+  # Yada yada
+  ...
 };
 
 app->start;
