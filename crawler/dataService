@@ -1,11 +1,14 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
+use Mojo::Base -signatures;
 
-plugin 'Config' => { default => {} };
+plugin 'Config' => {
+  default => {}
+};
+
 
 # Run on startip
-hook 'before_server_start' => sub {
-  my ($server, $app) = @_;
+hook 'before_server_start' => sub ($server, $app) {
 
   # Create in-memory map of credible sources
   # based on the pages to crawl
@@ -29,21 +32,98 @@ hook 'before_server_start' => sub {
 
 
 # Get the credibility score of a source
-helper 'get_credibility' => sub {
-  my ($c, $url) = @_;
+helper 'get_credibility' => sub ($c, $url) {
   my $source = Mojo::URL->new($url)->host;
   return $c->config('credible')->{$source} // 0.0;
 };
 
 
+# Fetch resource blocking (temporarily)
+helper 'fetch' => sub ($c, $url) {
+
+  # Fetch the resource blocking (why not?)
+  my $tx = $c->ua->get($url);
+  my $res = $tx->result;
+
+  if ($res->is_success) {
+    return {
+      headers => $res->headers->to_hash,
+      body => $res->body,
+      url => $url
+    };
+  }
+
+  # An error occurred
+  elsif ($res->is_error) {
+    return {
+      error => $res->message,
+      url => $url
+    }
+  };
+
+  return {
+    error => 'Unknown error',
+    url => $url
+  };
+};
+
+
+# Clean resource with default cleaners
+helper 'clean' => sub ($c, $cascade, $res) {
+
+  # Initialize cleaned data
+  my $data = {
+    header => $res->{headers},
+    html => $res->{body},
+    metadata => {},
+    links => []
+  };
+
+  # Iterate over all cleaners
+  foreach (@$cascade) {
+
+    # Call the cleaner as
+    # cleaner(
+    #   header => $header,
+    #   metadata => {},
+    #   html => $html,
+    #   links => []
+    # )
+    $data = $_->(%$data)
+  };
+
+  return $data;
+};
+
+
 # Return the credibility score of a source
-get '/credibility' => sub {
-  my $c = shift;
+get '/credibility' => sub ($c) {
   my $url = $c->param('url');
   $c->render(json => {
     url => $url,
     score => $c->get_credibility($url)
   });
+};
+
+
+# Return the clean data of a url
+get '/clean' => sub ($c) {
+  # TODO:
+  #   Ensure this is an absolue URL
+  my $url = $c->param('url');
+
+  my $res = $c->fetch($url);
+
+  # An error occurred
+  if ($res->{error}) {
+    return $c->render(json => $res)
+  };
+
+  return $c->render(
+    # TODO:
+    #   use base cleaner cascade
+    json => $c->clean([sub { return $_[0] } ], $res)
+  );
 };
 
 app->start;
