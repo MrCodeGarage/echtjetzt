@@ -32,7 +32,7 @@ phases:
       - aws --version
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
       # check, who runs the build and get the environment
-      - BRANCH_NAME=kifakenews
+      - BRANCH_NAME=ki
       - APPLICATION_NAME=kifakenews
       - REPOSITORY_URI=191014696307.dkr.ecr.eu-central-1.amazonaws.com/ki
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
@@ -47,16 +47,17 @@ phases:
       - cp -rf ./www/* ./build/www;
       # - cd ./build Docker
       - echo Building the Docker image...
-      - docker build -t $REPOSITORY_URI:$BRANCH_NAME ./build
+      - docker build -t ki ./build
       # Tag the built image
-      - docker tag $REPOSITORY_URI:$BRANCH_NAME $REPOSITORY_URI:$IMAGE_TAG
+      - docker tag ki:latest 191014696307.dkr.ecr.eu-central-1.amazonaws.com/ki:latest
+
+
 
   post_build:
     commands:
       - echo Build completed on $(date)
       - echo Pushing the Docker images...
-      - docker push $REPOSITORY_URI:$BRANCH_NAME
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - docker push 191014696307.dkr.ecr.eu-central-1.amazonaws.com/ki:latest
       - echo Creating Image Definitions File for current $BRANCH_NAME stage #has to be done here so we can have $param in json
       - | #readability
         {
