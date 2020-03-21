@@ -11,13 +11,16 @@ plugin 'Config' => {
   }
 };
 
+hook before_server_start => sub ($server, $app) {
+  app->init_config;
+};
 
-# Run on startip
-hook 'before_server_start' => sub ($server, $app) {
-
+helper init_config => sub ($c) {
+  my $app = $c->app;
   # Create in-memory map of credible sources
   # based on the pages to crawl
   my $pages = $app->config('pages') // [];
+
 
   # In addition to the config file (maybe instead)
   # crawl the CSV file with pages to crawl
@@ -44,7 +47,6 @@ hook 'before_server_start' => sub ($server, $app) {
     # if already set - otherwise set
     if (!exists($credible->{$source})
           || $credible->{$source} > $_->{cred}) {
-
       $credible->{$source} = $_->{cred};
     }
   };
@@ -52,6 +54,10 @@ hook 'before_server_start' => sub ($server, $app) {
   # Reset list of credible sources
   $app->config(credible => $credible);
 };
+
+
+# Register crawl command
+push @{app->commands->namespaces}, 'DataService';
 
 
 # Get the credibility score of a source

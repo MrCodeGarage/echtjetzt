@@ -10,7 +10,8 @@ WriteMakefile(
     'Mojolicious' => '8.34',
     'HTTP::Tiny' => '0.076',
     'HTML::Restrict' => '3.0.0',
-    'Mojo::CSV' => '1.001004'
+    'Mojo::CSV' => '1.001004',
+    'WWW::Crawler::Mojo' => '0.25'
   },
   MIN_PERL_VERSION => 5.020000,
   test      => {TESTS => 't/*.t'}
