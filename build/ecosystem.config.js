@@ -1,6 +1,6 @@
 module.exports = {
     apps: [{
-        name: 'k1',
+        name: 'KI',
         script: '/usr/src/app/bundle/main.js',
         args: '',
         instances: 1,
