@@ -16,7 +16,7 @@
 #      VERSION: 1.0
 #      CREATED: 2020-03-21, 17:03:33 (CET)
 #     REVISION: ---
-#  Last Change: 2020-03-21, 20:20:50 (CET)
+#  Last Change: 2020-03-21, 20:51:38 (CET)
 #===============================================================================
 
 use strict;
@@ -52,7 +52,7 @@ my %DISPATCH = (
         \&strip]
 );
 
-
+# process a document
 sub get_document($url_string, $recursive) {
   my $url = URI->new($url_string);
   my $response = $ua->get($url);
@@ -67,22 +67,32 @@ sub get_document($url_string, $recursive) {
               header => $response->{headers},
           });
       $doc = get_links($doc);
-      dump($doc->{links});
   }
 }
-sub is_local_link($url_string, $domain) {
-    my $base = $domain->scheme() . "://" . $domain->host();
-    my $rel_url = URI->new($url_string)->rel($base);
-    my $url = URI->new($url_string)->abs($base);
-    return ($url =~ m/$base/) && ($rel_url !~ m{^/+$});
+
+sub get_base($url) {
+    return $url->scheme() . "://" . $url->host();
 }
 
+sub is_local_link($url_string, $domain, ) {
+    my $base = get_base($domain);
+    my $rel_url = URI->new($url_string)->rel($base);
+    my $url = URI->new($url_string)->abs($base);
+    if ($url =~ m/$base/) {
+        return $url->as_string;
+    }
+}
+
+# get links
 sub get_links($params) {
-    $params->{links} = $params->{html}
-        ->find("a")->map(attr => "href")->grep(sub{is_local_link($_, $params->{url})})->compact()->to_array();
+    $params->{external_links} = $params->{html}
+        ->find("a")->map(attr => "href")->grep(sub{!is_local_link($_, $params->{url})})->compact()->to_array();
+    $params->{internal_links} = $params->{html}
+        ->find("a")->map(attr => "href")->map(sub{is_local_link($_, $params->{url})})->compact()->to_array();
     return $params;
 }
 
+# get plain text and simple HTML
 sub strip($params) {
     my $plain = HTML::Restrict->new();
     my $moderate = HTML::Restrict-> new([
@@ -98,12 +108,15 @@ sub strip($params) {
 }
 
 
-# heuristically get a main part
+# heuristically get a main part and remove navigation panels
 sub get_main($params) {
     my $main = $params->{html}->at('main') //
     $params->{html}->at('div[class=main]') //
     $params->{html}->at('div[class=content]');
     $params->{html} = $main;
+    $main->find("nav")->map(sub{$_->remove});
+    $main->find("*[class=nav]")->map(sub{$_->remove});
+    $main->find("*[class=navigation]")->map(sub{$_->remove});
     return $params;
 }
 
