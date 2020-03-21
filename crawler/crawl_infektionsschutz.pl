@@ -16,7 +16,7 @@
 #      VERSION: 1.0
 #      CREATED: 2020-03-21, 17:03:33 (CET)
 #     REVISION: ---
-#  Last Change: 2020-03-21, 22:49:21 (CET)
+#  Last Change: 2020-03-21, 23:24:45 (+01:00)
 #===============================================================================
 
 use strict;
@@ -49,7 +49,7 @@ my %DISPATCH = (
     "www.infektionsschutz.de" => [
         \&clean_infektionsschutz,
         \&get_main,
-        \&strip]
+        \&finish]
 );
 
 # process a document
@@ -61,14 +61,13 @@ sub get_document($url_string, $recursive) {
       my $doc = get_main(get_meta({
               url => $url,
               html => $tree,
-              recursive => $recursive,
               external_links => [],
               internal_links => [],
               metadata => {},
               header => $response->{headers},
           }));
       $doc = get_links($doc);
-      $doc = strip($doc);
+      $doc = finish($doc);
   }
 }
 
@@ -110,20 +109,26 @@ sub normalize_space($text) {
 }
 
 # get plain text and simple HTML
-sub strip($params) {
+sub finish($params) {
     my $plain = HTML::Restrict->new();
     my $moderate = HTML::Restrict->new(rules => {
             strong => [],
             em => [],
-            div => [],
             main => [],
         }
     );
+    $params->{html}->find("script,stylesheet")->each(sub { $_->remove()});
     $params->{html}->find("i")->each(sub{ $_->tag("em")});
+    $params->{html}->find("b")->each(sub{ $_->tag("strongs")});
     $params->{html}->find("*")->each(sub {if ($_->all_text() =~ m/\A\s*\Z/m){ $_->remove()}});
     $params->{text} = normalize_space(
         $plain->process($params->{html}->to_string()));
-    $params->{html} = $moderate->process($params->{html}->to_string);
+    my $html_string =  $moderate->process($params->{html}->to_string);
+    $params->{html};
+    my $dom = Mojo::DOM->new;
+    my $html_dom = $dom->parse("<main></main>");
+    $html_dom->content($html_string);
+    $params->{html} = $html_dom->to_string();
     return $params;
 }
 
