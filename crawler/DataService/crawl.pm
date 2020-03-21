@@ -20,16 +20,35 @@ sub run {
 
   my $spider = WWW::Crawler::Mojo->new;
 
+  # Initialize crawler
   $spider->on(
     start => sub {
       shift->say_start;
     }
   );
 
+  # Temporary!
+  use HTML::Restrict;
+  my $plain = HTML::Restrict->new;
+
+  # On receiving a page
   $spider->on(
     res => sub {
       my ($spider, $scrape, $job, $res) = @_;
+
       say sprintf('fetching %s resulted status %s', $job->url, $res->code);
+
+      my $data = $app->clean([
+        sub {
+          my $d = shift;
+          $d->{plain} = $plain->process($d->{body});
+          return $d;
+        }], $app->result_to_json($job->url, $res));
+
+      use Data::Dumper;
+      print Dumper $data;
+      exit;
+
       foreach my $job ($scrape->()) {
 
         # Check if the job is a known host

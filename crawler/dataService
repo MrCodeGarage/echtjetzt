@@ -74,6 +74,12 @@ helper 'fetch' => sub ($c, $url) {
   my $tx = $c->ua->get($url);
   my $res = $tx->result;
 
+  $c->result_to_json($url, $res);
+};
+
+
+# Reformat the result as JSON
+helper result_to_json => sub ($c, $url, $res) {
   if ($res->is_success) {
     return {
       headers => $res->headers->to_hash,
@@ -97,8 +103,11 @@ helper 'fetch' => sub ($c, $url) {
 };
 
 
-# Clean resource with default cleaners
+# Clean resource with several cleaners
 helper 'clean' => sub ($c, $cascade, $res) {
+
+  # TODO:
+  #   This doesn't use the crawler defined by Bernhard for now!
 
   # Initialize cleaned data
   my $data = {
@@ -118,7 +127,7 @@ helper 'clean' => sub ($c, $cascade, $res) {
     #   html => $html,
     #   links => []
     # )
-    $data = $_->(%$data)
+    $data = $_->($data)
   };
 
   return $data;
@@ -145,6 +154,7 @@ get '/clean' => sub ($c) {
   #   Ensure this is an absolue URL
   my $url = $c->param('url');
 
+  # Fetch the data
   my $res = $c->fetch($url);
 
   # An error occurred
@@ -156,6 +166,34 @@ get '/clean' => sub ($c) {
     # TODO:
     #   use base cleaner cascade
     json => $c->clean([sub { return $_[0] } ], $res)
+  );
+};
+
+
+# Store the clean data of a url
+post '/clean/:id' => sub {
+  # TODO:
+  #   Validate input
+  # TODO:
+  #   Ensure this is an absolue URL
+  my $url = $c->param('url');
+
+  # Fetch the data
+  my $res = $c->fetch($url);
+
+  # An error occurred
+  if ($res->{error}) {
+    return $c->render(json => $res)
+  };
+
+  # TODO:
+  #   use base cleaner cascade
+  my $clean_data = $c->clean([sub { return $_[0] } ], $res);
+
+  # TODO:
+  #   Store value in database
+  return $c->render(
+    json => $clean_data
   );
 };
 
@@ -174,3 +212,86 @@ post '/add' => sub ($c) {
 };
 
 app->start;
+
+
+1;
+
+
+__END__
+
+=pod
+
+=head1 NAME
+
+dataService - Data aggregation server
+
+=head1 ENDPOINTS
+
+=over 2
+
+=item B<GET /credibility>
+
+Accepted parameters:
+
+=over 4
+
+=item B<url>
+
+The URL of the resource.
+
+=back
+
+Returns the curated credibility of a resource.
+
+=back
+
+=item B<GET /clean>
+
+Accepted parameters:
+
+=over 4
+
+=item B<url>
+
+The URL of the resource.
+
+=back
+
+Returns the a cleaned object of the resource.
+
+=back
+
+=item B<POST /clean/:id>
+
+Accepted path values:
+
+=over 4
+
+=item B<id>
+
+The identificator of the request.
+
+=back
+
+Accepted parameters:
+
+=over 4
+
+=item B<url>
+
+The URL of the resource.
+
+=back
+
+Returns the a cleaned object of the resource
+and stores it in the database.
+
+=back
+
+=head1 COMMANDS
+
+  perl dataService crawl
+
+Crawl all data for the fake news identification.
+
+=cut
