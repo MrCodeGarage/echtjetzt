@@ -16,7 +16,7 @@
 #      VERSION: 1.0
 #      CREATED: 2020-03-21, 17:03:33 (CET)
 #     REVISION: ---
-#  Last Change: 2020-03-21, 22:23:12 (CET)
+#  Last Change: 2020-03-21, 22:49:21 (CET)
 #===============================================================================
 
 use strict;
@@ -32,7 +32,7 @@ use utf8::all;
 # binmode(DATA, ":encoding(UTF-8)");
 
 # use charnames qw( :full :short );
-use v5.20;
+use v5.24;
 use feature qw(say state switch unicode_strings signatures);
 no warnings qw(experimental::signatures);
 use re "/u";
@@ -68,6 +68,7 @@ sub get_document($url_string, $recursive) {
               header => $response->{headers},
           }));
       $doc = get_links($doc);
+      $doc = strip($doc);
   }
 }
 
@@ -89,10 +90,13 @@ sub is_local_link($url_string, $domain, ) {
     }
 }
 
+
 # get links
 sub get_links($params) {
-    $params->{external_links} = $params->{html}
-        ->find("a")->map(attr => "href")->grep(sub{!is_local_link($_, $params->{url})})->compact()->to_array();
+    my $external = $params->{html}
+        ->find("a")->map(attr => "href")->grep(sub{!is_local_link($_, $params->{url})})->compact();
+    $params->{external_links} = $external->to_array();
+    $params->{sources} = $external->map(sub {URI->new($_)->host()});
     $params->{internal_links} = $params->{html}
         ->find("a")->map(attr => "href")->map(sub{is_local_link($_, $params->{url})})->compact()->to_array();
     return $params;
@@ -108,15 +112,18 @@ sub normalize_space($text) {
 # get plain text and simple HTML
 sub strip($params) {
     my $plain = HTML::Restrict->new();
-    my $moderate = HTML::Restrict-> new([
-            rules => [
-                strong => [],
-                em => [],
-            ]
-        ]);
-    $params->html->find("i")->each(sub{ $_->tag("em")});
-    $params->{html} = $plain->process($params->{html}->to_string());
-    $params->{html} = $moderate->process($params->{html}->to_string());
+    my $moderate = HTML::Restrict->new(rules => {
+            strong => [],
+            em => [],
+            div => [],
+            main => [],
+        }
+    );
+    $params->{html}->find("i")->each(sub{ $_->tag("em")});
+    $params->{html}->find("*")->each(sub {if ($_->all_text() =~ m/\A\s*\Z/m){ $_->remove()}});
+    $params->{text} = normalize_space(
+        $plain->process($params->{html}->to_string()));
+    $params->{html} = $moderate->process($params->{html}->to_string);
     return $params;
 }
 
