@@ -5,7 +5,7 @@ var Future = require("fibers/future");
 
 
 Meteor.methods({
-    checkText() {
+    sendToUrlService(id, url) {
         return "Juhu"
     }
 });
