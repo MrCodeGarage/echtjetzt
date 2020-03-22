@@ -1,4 +1,6 @@
 from datetime import datetime
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn import metrics
 
 from db_api import get_articles
 
@@ -8,22 +10,22 @@ def classify_text(text: str):
     percent = 70
 
     articles = get_articles()
-    nurText = list(map(lambda el: el["text"], articles))
-
-    similarDocs = find_similar_doc([text], nurText)
-    print(similarDocs)
+    nurText = dict(map(lambda el: el["text"], articles))
+    print(nurText)
+    similar_website, similarity_score = find_similar_doc([text], nurText)
+    #print(similar_website, similarity_score)
         
     return {
         "percent": percent,
         "quellen": [{
             'quelle': 1,
-            'link': 'https://web.de',
-            'percent': 50,
+            'link': similar_website[0],
+            'percent': similarity_score[0]*100,
             'stand': datetime.today()
         }, {
             'quelle': 2,
-            'link': 'https://spiegel.de',
-            'percent': 80,
+            'link': similar_website[1],
+            'percent': similarity_score[1]*100,
             'stand': datetime.today()
         }]
     }
