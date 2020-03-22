@@ -14,6 +14,7 @@ export class HomePage {
   public switchLongText = false;
   public switchResult   = 1;
   public currentId      = "";
+  public switchMode     = 2;
 
   answer = {
     percent:50,
@@ -36,7 +37,6 @@ export class HomePage {
 
   timi;
   onChange(){
-    console.log("adsa");
     if(typeof this.timi !== "undefined"){
       clearTimeout(this.timi);
     }
@@ -115,7 +115,7 @@ export class HomePage {
           if(data.length > 0){
             this.answer = data[0].ans;
             this.switchResult = 3;
-            this.mo.colObsJob.remove({"_id":data[0]._id})
+           // this.mo.colObsJob.remove({"_id":data[0]._id})
             this.ngZone.run(() => {});
           }
         },1000);
