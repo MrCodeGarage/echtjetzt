@@ -47,7 +47,13 @@ sub get_document($url_string, $recursive) {
 }
 
 sub get_meta($params) {
-  $params->{metadata}->{title} = $params->{html}->at("title")->all_text();
+  my $title_el = $params->{html}->at("title") //
+    $params->{html}->at("h1.title,h1.titel,div.title,div.titel");
+  my $title = "";
+  if (defined $title_el) {
+    $title = $title_el->all_text();
+  }
+  $params->{metadata}->{title} = $title;
 
   # if set in HTML file, get //base/@href
   my $base_el = $params->{html}->at("base");
