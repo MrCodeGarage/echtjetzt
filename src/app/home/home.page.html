@@ -21,8 +21,8 @@
                 </ion-button>
             </div>
             <div *ngIf="switchResult == 1">
-                <h1>Willkommen bei EchtJetzt</h1>
-                <div>
+                <h1>Willkommen bei <span style="font-weight: bold;">EchtJetzt</span></h1>
+                <div style="font-style: italic;">
                     Überprüfen Sie kostenlos Texte über Corona/Corvid 19 auf ihren Wahrheitsgehalt.
                 </div>
 
@@ -37,7 +37,7 @@
                 <ng-lottie [options]="optionsLoader"></ng-lottie>
 
             </div>
-            <div class="styleOutput" *ngIf="switchResult == 3">
+            <div style="    margin-left: 0px;" class="styleOutput" *ngIf="switchResult == 3">
                 <div>
                     <div class="radialProgressBar progress-{{answer.percent}}">
                         <div class="overlay">{{answer.percent}}%</div>
@@ -66,8 +66,8 @@
             </div>
         </div>
         <div class="middle2 overus" *ngIf="switchMode == 1">
-            <h1>Datenschutzerklärung</h1>
-            <h2>Einleitung</h2>
+            <h1>Datenschutz</h1>
+            <h2>ECHTJETZT - DATENSCHUTZERKLÄRUNG</h2>
             <p>Mit der folgenden Datenschutzerklärung möchten wir Sie darüber aufklären, welche Arten Ihrer personenbezogenen Daten (nachfolgend auch kurz als "Daten“ bezeichnet) wir zu welchen Zwecken und in welchem Umfang verarbeiten. Die Datenschutzerklärung
                 gilt für alle von uns durchgeführten Verarbeitungen personenbezogener Daten, sowohl im Rahmen der Erbringung unserer Leistungen als auch insbesondere auf unseren Webseiten, in mobilen Applikationen sowie innerhalb externer Onlinepräsenzen,
                 wie z.B. unserer Social-Media-Profile (nachfolgend zusammenfassend bezeichnet als "Onlineangebot“).</p>

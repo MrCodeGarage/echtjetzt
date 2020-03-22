@@ -17,7 +17,7 @@ RUN cd /usr/src/tempapp/crawler && cpanm -v HTML::Restrict
 RUN cd /usr/src/tempapp/crawler && cpanm -v Mojolicious
 RUN cd /usr/src/tempapp/crawler && cpanm -v Mojo::CSV
 RUN cd /usr/src/tempapp/crawler && cpanm -v WWW::Crawler::Mojo
-RUN cd /usr/src/tempapp/crawler && cpanm -v prove -lr t
+RUN cd /usr/src/tempapp/crawler && prove -lr t
 RUN tar -xvzf /usr/src/tempapp/api.tar.gz -C /usr/src/app/
 RUN npm install pm2 -g
 ENV PM2_PUBLIC_KEY yvrvn72bu2lkm32
