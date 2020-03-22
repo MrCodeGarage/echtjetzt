@@ -3,6 +3,8 @@ use Mojo::ByteStream 'b';
 use Mojo::Base 'Mojolicious::Command';
 use Mojo::JSON 'encode_json';
 
+use Data::Dump qw/dump/;
+
 use WWW::Crawler::Mojo;
 
 use Getopt::Long qw/GetOptions :config no_auto_abbrev no_ignore_case/;
@@ -67,7 +69,6 @@ sub run {
 
       # Parse internal and external links
       foreach my $link (@{$data->{internal_links}}, @{$data->{external_links}}) {
-
         # Check if the job is a known host
         my $credible = Mojo::URL->new($link)->host;
 
@@ -89,8 +90,15 @@ sub run {
   );
 
   # TEMP:
-  $spider->enqueue('https://www.infektionsschutz.de/coronavirus/');
-  $spider->enqueue('https://www.bmi.bund.de/SharedDocs/faqs/DE/themen/bevoelkerungsschutz/coronavirus/coronavirus-faqs.html');
+
+  # $spider->enqueue("http://schluesselkindblog.com");
+  $spider->enqueue("http://blauerbote.com");
+  $spider->enqueue("http://blauerbote.com/2020/03/21/selbstzerstoererisch-professor-bhakdi-ruft-zu-sofortigem-stopp-der-anti-corona-massnahmen-der-regierung-auf/");
+  $spider->enqueue("https://smopo.ch/ansammlungen-von-mehr-als-fuenf-personen-strikt-verboten/");
+  $spider->enqueue("http://www.truth24.net/mehr-menschen-ohne-obdach-es-gibt-noch-platz-fuer-fluechtlinge/");
+  $spider->enqueue("http://www.rapefugees.net/gruppenvergewaltigung-essen-vertuscht-lauenburger-gang-ist-ein-grosser-muslimclan/");
+  # $spider->enqueue('https://www.infektionsschutz.de/coronavirus/');
+  # $spider->enqueue('https://www.bmi.bund.de/SharedDocs/faqs/DE/themen/bevoelkerungsschutz/coronavirus/coronavirus-faqs.html');
   $spider->crawl;
 
   $fh->close;

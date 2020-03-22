@@ -6,6 +6,8 @@ use utf8;
 use utf8::all;
 use open qw( :encoding(UTF-8) :std );
 
+use List::MoreUtils qw(uniq);
+
 # binmode(STDIN,":utf8");
 # binmode(STDERR,":utf8");
 # binmode(STDOUT,":utf8");
@@ -121,15 +123,28 @@ sub is_www_link($url) {
   return ($url =~ m{^https?:}) || ($url !~ m{^[a-z]++:})
 }
 
+# try to exclude non-HTML content.
+# TODO: use heuristic on header->{Content-Type} after first get
+sub is_licit_link($url) {
+  $url =~ s/\?.*$//g;
+  $url =~ s{^https?://}{};
+  $url =~ s{^[^/]*?(?:/|$)}{};
+  my $ret = ($url eq "") || ($url =~ m{(?:^|/)[^.]*$|(?:html?|php|cgi|pl)$});
+  # say STDERR "CHECK: $url => $ret";
+  return $ret
+}
+
 # get links
 sub get_links($params) {
   my $link_candidates = $params->{html}
   ->find("a")->map(attr => "href")->compact()
   ->grep(\&is_www_link)
+  ->grep(\&is_licit_link)
   ->map(sub {
     return URI->new($_)->abs($params->{base_url})->as_string();
     });
-  my $external = $link_candidates->grep(sub{!is_local_link($_, $params->{base_url})})->compact();
+  my $external = $link_candidates
+    ->grep(sub{!is_local_link($_, $params->{base_url})})->compact();
   $params->{external_links} = $external->to_array();
   $params->{sources} = $external->map(sub {URI->new($_)->host()});
   $params->{internal_links} = $link_candidates->map(sub{is_local_link($_, $params->{base_url})})->compact()->to_array();
@@ -156,6 +171,9 @@ my $moderate = HTML::Restrict->new(rules => $moderate_rules);
 
 # get plain text and simple HTML
 sub finish($params) {
+  $params->{sources} = [ uniq @{$params->{sources}} ];
+  $params->{internal_links} = [ uniq @{$params->{internal_links}} ];
+  $params->{external_links} = [ uniq @{$params->{external_links}} ];
   $params->{html}->find("script,stylesheet")->each(sub { $_->remove()});
 
   # normalize <i>/<b>
@@ -181,26 +199,54 @@ sub finish($params) {
   my $dom = Mojo::DOM->new;
   my $html_dom = $dom->parse("<main></main>");
   $html_dom->at("main")->content($html_string);
-  $params->{html} = $html_dom->to_string();
+  $params->{html} = normalize_space($html_dom->to_string());
 
   return $params;
 }
 
+sub remove_if_has($parent, $child_selector) {
+  my $child = $parent->at($child_selector);
+  if (defined $child) {
+    $child->remove();
+  }
+}
 
 # heuristically get a main part and remove navigation panels
 sub get_main($params) {
 
   # try to get typical main content:
-  my $main = $params->{html}->at('main') //
-  $params->{html}->at('div[class=main]') //
-  $params->{html}->at('div[class=content]') //
+  my $main =
+  $params->{html}->at('*[class=~"content-area"]') //
+  $params->{html}->at('*[class=~"o-content--main"]') //
+  # rapefugees
+  $params->{html}->at('#content') //
+  $params->{html}->at('article') //
+  $params->{html}->at('main') //
+  $params->{html}->at('div[class=~main]') //
+  $params->{html}->at('div[class=~entry-content]') //
   $params->{html};
   $params->{html} = $main;
 
+  my $to_remove = Mojo::Collection->new(
+    # tagesschau.de
+    "div.metablockwrapper",
+    # blauerbote.com
+    "#comments",
+    # smopo.ch
+    "#comment-form-wrap",
+    ".adsense_single",
+    # http://www.rapefugees.net/
+    "addtoany_content", " addtoany_content_bottom"
+    # blog.halle-leaks.net
+    ".shariff",
+
+    );
+
+  $to_remove->each(sub{remove_if_has($main, $_);});
+
   # no navigation, please:
-  $main->find("nav")->map(sub{$_->remove});
-  $main->find("*[class=nav]")->map(sub{$_->remove});
-  $main->find("*[class=navigation]")->map(sub{$_->remove});
+  $main->find("nav,footer,*[class=nav],*[class=navigation]")
+  ->map(sub{$_->remove});
   return $params;
 }
 

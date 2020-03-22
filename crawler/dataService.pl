@@ -42,6 +42,8 @@ helper init_config => sub ($c) {
     # Add each page to the config
     $data->each(
       sub {
+        $_ = map {$_ =~ s/\s+$//; $_ =~ s/^\s+//; return $_} @$_;
+        say $_->[0];
         push @$pages, {
           url => $_->[0],
           title => $_->[1],
@@ -56,7 +58,6 @@ helper init_config => sub ($c) {
   my $credible = $app->config('credible') // {};
   foreach (@$pages) {
     my $source = Mojo::URL->new($_->{url})->host;
-
     # Always take the lowest credibility value,
     # if already set - otherwise set
     if (!exists($credible->{$source})
@@ -135,8 +136,12 @@ helper 'clean' => sub ($c, $cascade, $res) {
   my $enc = guess_encoding($res->{body}); # may return "or"-separated list
   my $body = $res->{body};
   if ($enc =~ /utf-\S+/i) {  # outsmart guess_encoding
-    $body = Encode::decode($&, $body);
+    my $new_body = Encode::decode($&, $body);
+    if (defined $new_body) {
+      $body = $new_body;
+    }
   }
+
   my $data = {
     url => $res->{url},
     base_url => "",
