@@ -30,4 +30,4 @@ RUN cd /usr/src/app/bundle/programs/server && npm install
 
 
 
-CMD ["sh", "-c", "nginx && morbo -l 'http://*:3200' /usr/src/tempapp/crawler/dataService.pl && pm2-runtime start /usr/src/tempapp/ecosystem.config.js --env $env_name"]
+CMD ["sh", "-c", "nginx  && pm2-runtime start /usr/src/tempapp/ecosystem.config.js --env $env_name && morbo -l 'http://*:3200' /usr/src/tempapp/crawler/dataService.pl"]
