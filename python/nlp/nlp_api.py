@@ -6,8 +6,10 @@ from db_api import get_articles
 
 from nlp.find_similar_doc import find_similar_doc
 
+from nlp.linear_regression_predict import predict
+
 def classify_text(text: str):
-    percent = 70
+    percent = predict(text)
 
     articles = get_articles()
     nurText = dict(map(lambda el: el["text"], articles))
