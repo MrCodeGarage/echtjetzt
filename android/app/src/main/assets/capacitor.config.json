@@ -1,0 +1,8 @@
+{
+  "appId": "com.cgs.echtjetzt",
+  "appName": "EchtJetzt",
+  "bundledWebRuntime": false,
+  "npmClient": "yarn",
+  "webDir": "www",
+  "cordova": {}
+}
