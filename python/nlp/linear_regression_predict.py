@@ -7,9 +7,10 @@ import numpy as np
 import pandas as pd
 import os
 
-def predict(txt):
-    file = os.getcwd() + '/nlp/' + 'linear_regression.joblib'
-    model = load(file)
+file = './nlp/linear_regression.joblib'
+model = load(file)
+
+def predict(txt):    
 
     text = pd.DataFrame([[txt]])
     
