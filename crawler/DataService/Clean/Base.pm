@@ -31,7 +31,7 @@ sub get_document($url_string, $recursive) {
   my $url = URI->new($url_string);
   my $response = $ua->get($url);
   if ($response->{success}) {
-    my $tree = Mojo::DOM -> new($response->{content});
+    my $tree = Mojo::DOM ->new($response->{content});
     my $doc = get_main(get_meta({
           url => $url,
           html => $tree,
@@ -50,9 +50,9 @@ sub find_meta_tag($params, $value) {
   $params->{html}->find("meta")->first(sub {
     if (defined $_->attr("http-equiv")) {
       return $_->attr("http-equiv") =~ m/$value/i
-     } elsif (defined $_->attr("name")) {
-       return $_->attr("name") =~ m/$value/i;
-     }
+    } elsif (defined $_->attr("name")) {
+      return $_->attr("name") =~ m/$value/i;
+    }
   });
 }
 

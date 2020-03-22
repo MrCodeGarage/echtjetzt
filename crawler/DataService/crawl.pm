@@ -2,6 +2,7 @@ package DataService::crawl;
 use Mojo::ByteStream 'b';
 use Mojo::Base 'Mojolicious::Command';
 use Mojo::JSON 'encode_json';
+
 use WWW::Crawler::Mojo;
 
 use Getopt::Long qw/GetOptions :config no_auto_abbrev no_ignore_case/;
@@ -13,9 +14,9 @@ has usage       => sub { shift->extract_usage };
 # TEMP
 sub store {
   my ($self, $fh, $data) = @_;
-  my $json = b(encode_json($data))->decode;
+  my $json = encode_json($data);
   $json =~ s/\n+/ /g;
-  print $fh $json
+  say $fh $json;
 };
 
 
@@ -38,8 +39,8 @@ sub run {
 
   # Store as http://jsonlines.org/
   my $file = $self->app->home->child('Data', 'testcrawl.jsonl');
-  my $fh = $file->open('>>');
-  $fh->binmode(1);
+  my $fh = $file->open('>');
+  $fh->binmode(":utf-8");
 
   # Initialize crawler
   $spider->on(

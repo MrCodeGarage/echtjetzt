@@ -41,8 +41,8 @@ helper init_config => sub ($c) {
     $data->each(
       sub {
         push @$pages, {
-          url => $_->[1],
-          cred => $_->[3],
+          url => $_->[2],
+          cred => $_->[4],
           freq => ''
         };
       }
@@ -115,6 +115,7 @@ helper result_to_json => sub ($c, $url, $res) {
   };
 };
 
+use Encode::Guess qw/ ascii cp1252 iso-8859-1 utf-8 utf-16/;
 
 # Clean resource with several cleaners
 helper 'clean' => sub ($c, $cascade, $res) {
@@ -123,11 +124,16 @@ helper 'clean' => sub ($c, $cascade, $res) {
   #   This doesn't use the crawler defined by Bernhard for now!
 
   # Initialize cleaned data
+  my $enc = guess_encoding($res->{body});
+  my $body = $res->{body};
+  if ($enc =~ /utf-\S+/i) {
+    $body = Encode::decode($&, $body);
+  }
   my $data = {
     url => $res->{url},
     base_url => "",
     header => $res->{header},
-    html => Mojo::DOM->new($res->{body}),
+    html => Mojo::DOM->new($body),
     metadata => {},
     external_links => [],
     internal_links => []
