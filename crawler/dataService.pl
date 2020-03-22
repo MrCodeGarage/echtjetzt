@@ -10,6 +10,7 @@ use DataService::Clean::Base;
 use Mojo::JSON qw'encode_json decode_json';
 use MongoDB;
 use Mojo::CSV;
+use Mojo::Util 'trim';
 use Data::Dump qw/dump/;
 
 
@@ -46,17 +47,11 @@ helper init_config => sub ($c) {
     my $data = Mojo::CSV->new->slurp_body($page_file);
 
     # Add each page to the config
-    $data->map(
-      sub {
-        s/\s+$//;
-        s/^\s+//;
-        $_;
-      }
-    )->each(
+    $data->each(
       sub {
         push @$pages, {
-          url => $_->[0],
-          title => $_->[1],
+          url => trim($_->[0]),
+          title => trim($_->[1]),
           cred => $_->[2],
           crawl => $_->[3],
           freq => ''
