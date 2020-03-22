@@ -12,13 +12,13 @@ RUN mkdir /usr/src/app
 RUN mkdir /usr/src/tempapp
 COPY . /usr/src/tempapp/
 RUN cd /usr/src/tempapp/crawler
-RUN ls
 RUN cpanm -v utf8::all
 RUN cpanm -v HTTP::Tiny
 RUN cpanm -v HTML::Restrict
 RUN cpanm -v Mojolicious
 RUN cpanm -v Mojo::CSV
 RUN cpanm -v WWW::Crawler::Mojo
+RUN ls
 RUN prove -lr t
 RUN tar -xvzf /usr/src/tempapp/api.tar.gz -C /usr/src/app/
 RUN npm install pm2 -g

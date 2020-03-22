@@ -91,6 +91,9 @@
                 height: auto;
                 z-index: 15;
                 width: 100%;
+                background: url(/assets/EchtJetztIllu6groß.png);
+                background-size: cover;
+                padding-bottom: 30px;
             }
         }
         .middle {
@@ -400,11 +403,11 @@
         margin-top: 70px;
         >h1 {
             font-weight: bolder;
-            color: var(--ki-black);
+            color: WHITE;
         }
         >div {
             margin-top: 20px;
-            color: var(--ki-black);
+            color: WHITE;
         }
     }
     
