@@ -14,8 +14,9 @@ client = MongoClient("mongodb+srv://hackaton:R8kiR0e3XhIqaVqp@cluster0.yiba8.mon
 articles_ref = client.ki["articles"]
 
 def get_articles():
-    result_cursor = articles_ref.find({})
+    result_cursor = articles_ref.find({"isFake": False})
     result = []
     for doc in result_cursor:
-        result.append(doc["content"])
+        result.append({ "text": doc["text"], "link": doc["link"]})
+
     return result

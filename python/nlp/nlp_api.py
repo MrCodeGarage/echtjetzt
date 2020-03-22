@@ -6,7 +6,11 @@ from nlp.find_similar_doc import find_similar_doc
 
 def classify_text(text: str):
     percent = 70
-    similarDocs = find_similar_doc([text], get_articles())
+
+    articles = get_articles()
+    nurText = list(map(lambda el: el["text"], articles))
+
+    similarDocs = find_similar_doc([text], nurText)
     print(similarDocs)
         
     return {
