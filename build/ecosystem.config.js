@@ -1,6 +1,6 @@
 module.exports = {
     apps: [{
-        name: 'KI',
+        name: 'KIMain',
         script: '/usr/src/app/bundle/main.js',
         args: '',
         instances: 1,
@@ -20,6 +20,30 @@ module.exports = {
             NODE_ENV: "production",
             PORT: "3400"
         }
+    }, {
+        name: 'Python',
+        script: '/usr/src/tempapp/python/index.py',
+        args: '',
+        instances: 1,
+        "exec_interpreter": "python",
+        autorestart: true,
+        watch: false,
+        max_memory_restart: '1G',
+        output: './outpython.log',
+        error: './errorpython.log',
+        log: './combinedpython.outerr.log'
+    }, {
+        name: 'Perl',
+        script: '/usr/src/tempapp/crawler/dataService.pl',
+        args: 'daemon -l http://*:3030',
+        instances: 1,
+        "exec_interpreter": "perl",
+        autorestart: true,
+        watch: false,
+        max_memory_restart: '1G',
+        output: './outperl.log',
+        error: './errorperl.log',
+        log: './combinedperl.outerr.log'
     }],
 
     deploy: {

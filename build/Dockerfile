@@ -4,6 +4,7 @@ RUN apt-get install nginx -y
 RUN apt-get install -y gettext
 RUN apt-get install -y perl
 RUN apt-get install -y cpanminus
+RUN apt-get install -y python
 COPY default.conf.template /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY codecert /etc/nginx/conf.d/codecert
@@ -19,6 +20,7 @@ RUN cd /usr/src/tempapp/crawler && cpanm -v Mojo::CSV
 RUN cd /usr/src/tempapp/crawler && cpanm -v WWW::Crawler::Mojo
 RUN cd /usr/src/tempapp/crawler && cpanm -v MongoDB
 RUN cd /usr/src/tempapp/crawler && prove -lr t
+RUN cd /usr/src/tempapp/python && pip install -r requirement.txt
 RUN tar -xvzf /usr/src/tempapp/api.tar.gz -C /usr/src/app/
 RUN npm install pm2 -g
 ENV PM2_PUBLIC_KEY yvrvn72bu2lkm32
@@ -29,5 +31,4 @@ RUN pm2 link u4rh5ruhn1xdgo3 vqag8k3mdn0nnlh
 RUN cd /usr/src/app/bundle/programs/server && npm install
 
 
-
-CMD ["sh", "-c", "nginx  && pm2-runtime start /usr/src/tempapp/ecosystem.config.js --env $env_name && morbo -l 'http://*:3200' /usr/src/tempapp/crawler/dataService.pl"]
+CMD ["sh", "-c", "nginx  && pm2-runtime start /usr/src/tempapp/ecosystem.config.js --env $env_name"]

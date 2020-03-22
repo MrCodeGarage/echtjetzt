@@ -47,13 +47,13 @@ phases:
       - cp -rf ./www/* ./build/www;
       - mkdir ./build/crawler
       - cp -rf ./crawler/* ./build/crawler;
+      - mkdir ./build/python
+      - cp -rf ./python/* ./build/python;
       # - cd ./build Docker
       - echo Building the Docker image...
       - docker build -t ki ./build
       # Tag the built image
       - docker tag ki:latest 191014696307.dkr.ecr.eu-central-1.amazonaws.com/ki:latest
-
-
 
   post_build:
     commands:
