@@ -36,6 +36,10 @@ ion-header::after {
     font-family: 'Open Sans', sans-serif!important;
 }
 
-app-home {
+body {
     background: #F0F0F0;
+}
+
+app-home {
+    background: transparent;
 }
