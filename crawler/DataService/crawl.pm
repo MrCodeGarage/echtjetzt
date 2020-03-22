@@ -1,5 +1,7 @@
 package DataService::crawl;
+use Mojo::ByteStream 'b';
 use Mojo::Base 'Mojolicious::Command';
+use Mojo::JSON 'encode_json';
 use WWW::Crawler::Mojo;
 
 use Getopt::Long qw/GetOptions :config no_auto_abbrev no_ignore_case/;
@@ -7,6 +9,17 @@ use Getopt::Long qw/GetOptions :config no_auto_abbrev no_ignore_case/;
 has description => 'Crawl sources for fake news identification';
 has usage       => sub { shift->extract_usage };
 
+
+# TEMP
+sub store {
+  my ($self, $fh, $data) = @_;
+  my $json = b(encode_json($data))->decode;
+  $json =~ s/\n+/ /g;
+  print $fh $json
+};
+
+
+# Run the crawler
 sub run {
   my $self = shift;
 
@@ -14,11 +27,19 @@ sub run {
   my $app = $self->app;
   my $log = $app->log;
 
+  # Initialize the configuration,
+  # which normally happens on server start
   $app->init_config;
 
+  my $cleaner = $app->config('cleaner');
   my $credible_hash = $app->config('credible');
 
   my $spider = WWW::Crawler::Mojo->new;
+
+  # Store as http://jsonlines.org/
+  my $file = $self->app->home->child('Data', 'testcrawl.jsonl');
+  my $fh = $file->open('>>');
+  $fh->binmode(1);
 
   # Initialize crawler
   $spider->on(
@@ -27,10 +48,6 @@ sub run {
     }
   );
 
-  # Temporary!
-  use HTML::Restrict;
-  my $plain = HTML::Restrict->new;
-
   # On receiving a page
   $spider->on(
     res => sub {
@@ -38,23 +55,24 @@ sub run {
 
       say sprintf('fetching %s resulted status %s', $job->url, $res->code);
 
-      my $data = $app->clean([
-        sub {
-          my $d = shift;
-          $d->{plain} = $plain->process($d->{body});
-          return $d;
-        }], $app->result_to_json($job->url, $res));
+      # Get json representation of the resource
+      my $json = $app->result_to_json($job->url->to_string, $res);
 
-      use Data::Dumper;
-      print Dumper $data;
-      exit;
+      # Clean the data
+      my $data = $app->clean(['meta','main', 'links'], $json);
 
-      foreach my $job ($scrape->()) {
+      # Store the data
+      $self->store($fh, $data);
+
+      # Parse internal and external links
+      foreach my $link (@{$data->{internal_links}}, @{$data->{external_links}}) {
 
         # Check if the job is a known host
-        my $credible = $job->url->host;
+        my $credible = Mojo::URL->new($link)->host;
+
         if (exists $credible_hash->{$credible}) {
-          $spider->enqueue($job);
+
+          $spider->enqueue($link);
         };
       };
     }
@@ -69,8 +87,12 @@ sub run {
     }
   );
 
+  # TEMP:
   $spider->enqueue('https://www.infektionsschutz.de/coronavirus/');
+  $spider->enqueue('https://www.bmi.bund.de/SharedDocs/faqs/DE/themen/bevoelkerungsschutz/coronavirus/coronavirus-faqs.html');
   $spider->crawl;
+
+  $fh->close;
 };
 
 

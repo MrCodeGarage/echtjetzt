@@ -32,7 +32,6 @@ helper init_config => sub ($c) {
   # based on the pages to crawl
   my $pages = $app->config('pages') // [];
 
-
   # In addition to the config file (maybe instead)
   # crawl the CSV file with pages to crawl
   if (my $page_file = $app->config('pageFile')) {
@@ -64,6 +63,9 @@ helper init_config => sub ($c) {
 
   # Reset list of credible sources
   $app->config(credible => $credible);
+
+  # Add cleaner references
+  $app->config(cleaner => \%cleaner);
 };
 
 
