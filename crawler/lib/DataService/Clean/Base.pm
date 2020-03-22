@@ -139,6 +139,7 @@ sub get_links($params) {
   my $link_candidates = $params->{html}
   ->find("a")->map(attr => "href")->compact()
   ->grep(\&is_www_link)
+  ->map(sub{s/\#.*$//g})
   ->grep(\&is_licit_link)
   ->map(sub {
     return URI->new($_)->abs($params->{base_url})->as_string();
