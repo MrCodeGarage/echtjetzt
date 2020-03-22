@@ -95,7 +95,7 @@
                 width: 100%;
                 background: url(/assets/EchtJetztIllu6groß.png);
                 background-size: cover;
-                padding-bottom: 30px;
+                padding-bottom: 26px;
             }
         }
         .middle {
@@ -132,7 +132,7 @@
             }
         }
         .searchContainer {
-            height: 250px;
+            height: 300px;
             display: flex;
             flex-direction: row;
             >div:first-of-type {
@@ -248,6 +248,9 @@
                 height: 100%;
                 z-index: 15;
                 width: 100%;
+                background: url(/assets/EchtJetztIllu6groß.png);
+                background-size: cover;
+                padding-bottom: 26px;
                 >div:first-of-type {
                     margin-top: 20px;
                     display: flex;
@@ -282,6 +285,9 @@
                     justify-content: center;
                     align-items: center;
                     color: var(--ki-rot);
+                    i {
+                        color: var(--ki-rot);
+                    }
                     i:before {
                         font-size: 33px!important;
                     }

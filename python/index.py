@@ -19,16 +19,16 @@ from datetime import datetime
 
 def startSearch(txt,dic):
     print(txt)
-    percent = 80
+    percent = 60
     quellen = [{
         'quelle':1,
         'link':'https://web.de',
-        'percent':80,
+        'percent':30,
         'stand':datetime.today()
     },{
         'quelle':2,
         'link':'https://spiegel.de',
-        'percent':80,
+        'percent':30,
         'stand':datetime.today()
     }]
     updateJob(dic,quellen, percent)
