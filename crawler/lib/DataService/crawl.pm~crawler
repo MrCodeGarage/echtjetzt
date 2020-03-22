@@ -3,6 +3,11 @@ use Mojo::ByteStream 'b';
 use Mojo::Base 'Mojolicious::Command';
 use Mojo::JSON 'encode_json';
 
+<<<<<<< HEAD:crawler/DataService/crawl.pm
+=======
+use Data::Dump qw/dump/;
+
+>>>>>>> crawler:crawler/lib/DataService/crawl.pm
 use WWW::Crawler::Mojo;
 
 use Getopt::Long qw/GetOptions :config no_auto_abbrev no_ignore_case/;
@@ -23,6 +28,7 @@ sub store {
 # Run the crawler
 sub run {
   my $self = shift;
+  my $single_page = shift;
 
   # Get the application
   my $app = $self->app;
@@ -34,7 +40,7 @@ sub run {
 
   my $cleaner = $app->config('cleaner');
   my $credible_hash = $app->config('credible');
-
+  my $recursively = $app->config('recursively');
   my $spider = WWW::Crawler::Mojo->new;
 
   # Store as http://jsonlines.org/
@@ -61,17 +67,21 @@ sub run {
 
       # Clean the data
       my $data = $app->clean(['meta','main', 'links'], $json);
+      my $credible = Mojo::URL->new($job->url)->host;
+      $data->{cred} = $credible_hash->{$credible} // 0;
 
       # Store the data
       $self->store($fh, $data);
 
       # Parse internal and external links
       foreach my $link (@{$data->{internal_links}}, @{$data->{external_links}}) {
-
         # Check if the job is a known host
         my $credible = Mojo::URL->new($link)->host;
 
-        if (exists $credible_hash->{$credible}) {
+        # TODO:
+        #   Credible may decide between www. and not
+        if (exists $credible_hash->{$credible}
+          && $recursively->{$credible} // 0) {
 
           $spider->enqueue($link);
         };
@@ -81,16 +91,28 @@ sub run {
 
   $spider->on(
     error => sub {
-      my ($msg, $job) = @_;
+      my ($self, $msg, $job) = @_;
       say $msg;
-      say "Re-scheduled";
       $spider->requeue($job);
     }
   );
 
-  # TEMP:
-  $spider->enqueue('https://www.infektionsschutz.de/coronavirus/');
-  $spider->enqueue('https://www.bmi.bund.de/SharedDocs/faqs/DE/themen/bevoelkerungsschutz/coronavirus/coronavirus-faqs.html');
+
+  # Only work on a single page
+  if ($single_page) {
+    $spider->enqueue($single_page);
+  }
+
+  # Work on the config list
+  else {
+    # Get all pages and crawl
+    my $pages = $app->config('pages') // [];
+    foreach (@$pages) {
+      $spider->enqueue($_->{url})
+    };
+  };
+
+  # Start crawling
   $spider->crawl;
 
   $fh->close;
