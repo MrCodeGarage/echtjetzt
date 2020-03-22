@@ -45,10 +45,10 @@
                 </div>
                 <div>
                     <div style="    margin-bottom: 55px;">
-                        Dieses Information stimmt zu {{answer.percent}}% mit folgenden Quellen übereinstimmt:
+                        Diese Nachricht ist zu {{answer.percent}}% kein Fake. Hier sind ähnliche Artikel aus vertrauenswürdigen Quellen:
                     </div>
                     <div class="link" *ngFor="let item of answer.quellen">
-                        <h2><span>Quelle {{item.quelle}} ({{item.link}})</span></h2>
+                        <h2><span>Quelle {{item.quelle}} (<a href="{{item.link}}" target=”_blank”>{{item.link |shortDomain}}</a>)</span></h2>
                         <div>
                             <div [style.width.%]="item.percent">
 
@@ -317,10 +317,10 @@
                 </div>
             </div>
             <div>
-                Dieses Information ist zu {{answer.percent}}% vertrauens-würdig, weil sie mit Folgenden Quellen übereinstimmt:
+                Diese Nachricht ist zu {{answer.percent}}% kein Fake. Hier sind ähnliche Artikel aus vertrauenswürdigen Quellen:
             </div>
             <div class="link" *ngFor="let item of answer.quellen">
-                <h2><span>Quelle {{item.quelle}} ({{item.link}})</span></h2>
+                <h2><span>Quelle {{item.quelle}} (<a href="{{item.link}}" target=”_blank”>{{item.link |shortDomain}}</a>)</span></h2>
                 <div>
                     <div [style.width.%]="answer.percent">
 

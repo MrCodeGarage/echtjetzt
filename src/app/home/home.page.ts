@@ -1,8 +1,33 @@
 import { Component,NgZone } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 
 import { AnimationOptions } from 'ngx-lottie';
 import {MongoService} from '../mongo.service';
 declare var Meteor;
+
+
+@Pipe({
+  name: 'shortDomain'
+})
+export class ShortDomainPipe implements PipeTransform {
+
+  transform(url: string, args?: any): any {
+      if (url) {
+          if (url.length > 3) {
+              let result;
+              let match;
+              if (match = url.match(/^(?:https?:\/\/)?(?:www\.)?([^:\/\n?=]+)/im)) {
+                  result = match[1];
+                  if (match = result.match(/^[^.]+\.(.+\..+)$/))
+                      result = match[1];
+              }
+              return result;
+          }
+          return url;
+      }
+      return url;
+  }
+}
 
 @Component({
   selector: 'app-home',

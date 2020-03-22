@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { LottieModule } from 'ngx-lottie';
 
-import { HomePage } from './home.page';
+import { HomePage,ShortDomainPipe } from './home.page';
 
 @NgModule({
   imports: [
@@ -20,6 +20,6 @@ import { HomePage } from './home.page';
       }
     ])
   ],
-  declarations: [HomePage]
+  declarations: [HomePage,ShortDomainPipe]
 })
 export class HomePageModule {}

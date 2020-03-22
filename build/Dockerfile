@@ -17,6 +17,7 @@ RUN cd /usr/src/tempapp/crawler && cpanm -v HTML::Restrict
 RUN cd /usr/src/tempapp/crawler && cpanm -v Mojolicious
 RUN cd /usr/src/tempapp/crawler && cpanm -v Mojo::CSV
 RUN cd /usr/src/tempapp/crawler && cpanm -v WWW::Crawler::Mojo
+RUN cd /usr/src/tempapp/crawler && cpanm -v MongoDB
 RUN cd /usr/src/tempapp/crawler && prove -lr t
 RUN tar -xvzf /usr/src/tempapp/api.tar.gz -C /usr/src/app/
 RUN npm install pm2 -g
