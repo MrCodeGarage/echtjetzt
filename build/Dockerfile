@@ -12,7 +12,7 @@ RUN mkdir /usr/src/app
 RUN mkdir /usr/src/tempapp
 COPY . /usr/src/tempapp/
 RUN cd /usr/src/tempapp/crawler
-RUN cpanm -v -n -f --installdeps .
+RUN cpanm --verbose -n -f --installdeps .
 RUN tar -xvzf /usr/src/tempapp/api.tar.gz -C /usr/src/app/
 RUN npm install pm2 -g
 ENV PM2_PUBLIC_KEY yvrvn72bu2lkm32
