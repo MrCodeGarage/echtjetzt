@@ -50,7 +50,7 @@ app-root {
     align-items: flex-end;
     height: 100%;
     >img {
-        object-fit: cover;
         height: 90%;
+        width: 100%;
     }
 }
