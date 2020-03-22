@@ -78,7 +78,7 @@ is($obj->{text}, 'Ich bin Inhalt! Dies führt intern und dies führt extern weit
 is_deeply('http://example.com', $obj->{url});
 like($obj->{html}, qr!^<main>!);
 unlike($obj->{html}, qr!<nav>!);
-
+is_deeply($obj->{sources}, ['external.example.com']);
 
 done_testing;
 __END__

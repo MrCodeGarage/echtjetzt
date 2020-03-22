@@ -1,9 +1,20 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 use Mojo::Base -signatures;
+use DataService::Clean::Base;
 use Mojo::CSV;
 
 our $VERSION = 0.01;
+
+# Register cleanup subroutines
+our %cleaner = (
+  meta  => \&DataService::Clean::Base::get_meta,
+  main  => \&DataService::Clean::Base::get_main,
+  links => \&DataService::Clean::Base::get_links
+);
+
+# Default cleanup cascade
+our $default = ['meta','main', 'links'];
 
 plugin 'Config' => {
   default => {
@@ -82,7 +93,7 @@ helper 'fetch' => sub ($c, $url) {
 helper result_to_json => sub ($c, $url, $res) {
   if ($res->is_success) {
     return {
-      headers => $res->headers->to_hash,
+      header => $res->headers->to_hash,
       body => $res->body,
       url => $url
     };
@@ -111,26 +122,22 @@ helper 'clean' => sub ($c, $cascade, $res) {
 
   # Initialize cleaned data
   my $data = {
-    header => $res->{headers},
-    html => $res->{body},
+    url => $res->{url},
+    header => $res->{header},
+    html => Mojo::DOM->new($res->{body}),
     metadata => {},
-    links => []
+    external_links => [],
+    internal_links => []
   };
 
   # Iterate over all cleaners
   foreach (@$cascade) {
-
-    # Call the cleaner as
-    # cleaner(
-    #   header => $header,
-    #   metadata => {},
-    #   html => $html,
-    #   links => []
-    # )
-    $data = $_->($data)
+    $data = $cleaner{$_}->($data)
   };
 
-  return $data;
+  # Strip unimportant data
+
+  return DataService::Clean::Base::finish($data);
 };
 
 
@@ -165,7 +172,7 @@ get '/clean' => sub ($c) {
   return $c->render(
     # TODO:
     #   use base cleaner cascade
-    json => $c->clean([sub { return $_[0] } ], $res)
+    json => $c->clean($default, $res)
   );
 };
 
@@ -188,7 +195,7 @@ post '/clean/:id' => sub ($c) {
 
   # TODO:
   #   use base cleaner cascade
-  my $clean_data = $c->clean([sub { return $_[0] } ], $res);
+  my $clean_data = $c->clean($default, $res);
 
   # TODO:
   #   Store value in database

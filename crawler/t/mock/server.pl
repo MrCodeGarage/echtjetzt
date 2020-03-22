@@ -3,8 +3,9 @@ use Mojolicious::Lite;
 
 # This is a fake server
 
-get '/test1' => sub {
-  return shift->render('test1');
+get '/test/:nr' => sub {
+  my $c = shift;
+  return $c->render('test' . $c->stash('nr'));
 };
 
 app->start;
@@ -20,5 +21,19 @@ __DATA__
   <body>
     <p>Dies ist der erste Paragraph!</p>
     <p>Dies ist der zweite Paragraph!</p>
+  </body>
+</html>
+
+@@ test2.html.ep
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hallo!</title>
+  </head>
+  <body>
+    <main>
+      <p>Dies ist der erste Paragraph!</p>
+      <p>Dies ist der zweite Paragraph!</p>
+    </main>
   </body>
 </html>

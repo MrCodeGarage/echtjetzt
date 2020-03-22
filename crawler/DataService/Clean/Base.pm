@@ -146,7 +146,8 @@ sub get_main($params) {
     # try to get typical main content:
     my $main = $params->{html}->at('main') //
     $params->{html}->at('div[class=main]') //
-    $params->{html}->at('div[class=content]');
+    $params->{html}->at('div[class=content]') //
+    $params->{html};
     $params->{html} = $main;
 
     # no navigation, please:

@@ -23,11 +23,23 @@ my $mock_mount = $t->app->plugin(
 
 my $c = $t->app->build_controller;
 
-my $res = $c->fetch('/testserver/test1');
+my $res = $c->fetch('/testserver/test/1');
 
-like($res->{headers}->{'Content-Type'}, qr!text\/html!);
-is($res->{url}, '/testserver/test1');
+like($res->{header}->{'Content-Type'}, qr!text\/html!);
+is($res->{url}, '/testserver/test/1');
 
 like($res->{body}, qr'<title>Hallo!</title>');
+
+
+$t->get_ok('/clean?url=/testserver/test/1')
+  ->status_is(200)
+  ->json_is('/external_links/0', undef)
+  ->json_like('/header/Content-Type', qr!^text\/html!)
+  ->json_is('/text', 'Hallo! Dies ist der erste Paragraph! '.
+              'Dies ist der zweite Paragraph!')
+  ->json_is('/metadata/title', 'Hallo!')
+  ->json_is('/sources/0', undef)
+  ;
+
 
 done_testing;
