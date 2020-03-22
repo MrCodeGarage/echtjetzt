@@ -3,8 +3,8 @@ from pymongo import MongoClient
 import pprint
 client = pymongo.MongoClient("mongodb+srv://hackaton:R8kiR0e3XhIqaVqp@cluster0.yiba8.mongodb.net/ki?retryWrites=true&w=majority")
 db = client.ki
-from datetime import datetime
 
+from nlp.nlp_api import classify_text
 
 #####################################################
 # Scripte Bitte hier einbinden.....
@@ -19,34 +19,10 @@ from datetime import datetime
 
 def startSearch(txt,dic):
     print(txt)
-    percent = 80
-    quellen = [{
-        'quelle':1,
-        'link':'https://web.de',
-        'percent':80,
-        'stand':datetime.today()
-    },{
-        'quelle':2,
-        'link':'https://spiegel.de',
-        'percent':80,
-        'stand':datetime.today()
-    }]
-    updateJob(dic,quellen, percent)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    result = classify_text(txt)
+   
+    updateJob(dic,result["quellen"], result["percent"])
 
 
 #############################################################
