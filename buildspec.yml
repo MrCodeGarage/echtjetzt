@@ -45,6 +45,8 @@ phases:
       - ionic build --prod
       - mkdir ./build/www
       - cp -rf ./www/* ./build/www;
+      - mkdir ./build/crawler
+      - cp -rf ./crawler/* ./build/crawler;
       # - cd ./build Docker
       - echo Building the Docker image...
       - docker build -t ki ./build

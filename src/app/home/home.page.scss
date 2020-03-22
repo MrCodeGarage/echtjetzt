@@ -8,12 +8,14 @@
     
     @media (min-width: 801px) {
         .styleOutput {
+            display: flex;
             >div:first-of-type {
                 display: flex;
                 justify-content: center;
-                align-items: center;
+                align-items: flex-start;
             }
             >div:nth-of-type(2) {
+                margin-left: 19px;
                 color: var(--ki-black);
             }
             .link {
@@ -88,18 +90,21 @@
                 position: absolute;
                 left: 0px;
                 top: 0px;
-                height: 100%;
+                height: auto;
                 z-index: 15;
                 width: 100%;
+                background: url(/assets/EchtJetztIllu6groß.png);
+                background-size: cover;
+                padding-bottom: 26px;
             }
         }
         .middle {
-            width: 800px;
+            width: 1000px;
             height: 50px;
             margin: 0 auto;
         }
         .middle2 {
-            width: 600px;
+            width: 800px;
             margin: 0 auto;
         }
         .logoheader {
@@ -113,7 +118,7 @@
                 justify-content: center;
                 align-items: center;
                 >img {
-                    width: 105px;
+                    width: 135px;
                 }
             }
             >div:nth-of-type(2) {
@@ -127,7 +132,7 @@
             }
         }
         .searchContainer {
-            height: 450px;
+            height: 300px;
             display: flex;
             flex-direction: row;
             >div:first-of-type {
@@ -139,6 +144,7 @@
                     height: 100%;
                     resize: none;
                     border: none;
+                    color: var(--ki-black);
                 }
             }
             >div:nth-of-type(2) {
@@ -243,6 +249,9 @@
                 height: 100%;
                 z-index: 15;
                 width: 100%;
+                background: url(/assets/EchtJetztIllu6groß.png);
+                background-size: cover;
+                padding-bottom: 26px;
                 >div:first-of-type {
                     margin-top: 20px;
                     display: flex;
@@ -276,7 +285,10 @@
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    color: var(--ki-blue);
+                    color: var(--ki-rot);
+                    i {
+                        color: var(--ki-rot);
+                    }
                     i:before {
                         font-size: 33px!important;
                     }
@@ -336,7 +348,7 @@
             >div:first-of-type {
                 display: flex;
                 justify-content: center;
-                align-items: center;
+                align-items: start;
             }
             >div:nth-of-type(2) {
                 color: var(--ki-black);
@@ -400,11 +412,17 @@
         margin-top: 70px;
         >h1 {
             font-weight: bolder;
-            color: var(--ki-black);
+            color: WHITE;
         }
         >div {
             margin-top: 20px;
-            color: var(--ki-black);
+            color: WHITE;
+        }
+        a {
+            color: WHITE;
+        }
+        * {
+            color: WHITE;
         }
     }
     
@@ -435,9 +453,9 @@
         background-image: linear-gradient(90deg, rgba(84, 148, 252, 0.20) 50%, transparent 50%), linear-gradient(90deg, #5494FC 50%, rgba(84, 148, 252, 0.20) 50%);
     }
     
-    .progress-10 {
-        background-image: -webkit-linear-gradient(36deg, rgba(84, 148, 252, 0.20) 50%, transparent 50%), -webkit-linear-gradient(left, #5494FC 50%, rgba(84, 148, 252, 0.20) 50%);
-        background-image: linear-gradient(54deg, rgba(84, 148, 252, 0.20) 50%, transparent 50%), linear-gradient(90deg, #5494FC 50%, rgba(84, 148, 252, 0.20) 50%);
+    .progress-5 {
+        background-image: -webkit-linear-gradient(left, rgba(84, 148, 252, 0.20) 50%, transparent 50%), -webkit-linear-gradient(left, #5494FC 50%, rgba(84, 148, 252, 0.20) 50%);
+        background-image: linear-gradient(90deg, rgba(84, 148, 252, 0.20) 50%, transparent 50%), linear-gradient(90deg, #5494FC 50%, rgba(84, 148, 252, 0.20) 50%);
     }
     
     .progress-20 {
@@ -466,6 +484,11 @@
     }
     
     .progress-70 {
+        background-image: -webkit-linear-gradient(left, #5494FC 50%, transparent 50%), -webkit-linear-gradient(72deg, #5494FC 50%, rgba(84, 148, 252, 0.20) 50%);
+        background-image: linear-gradient(90deg, #5494FC 50%, transparent 50%), linear-gradient(18deg, #5494FC 50%, rgba(84, 148, 252, 0.20) 50%);
+    }
+    
+    .progress-75 {
         background-image: -webkit-linear-gradient(left, #5494FC 50%, transparent 50%), -webkit-linear-gradient(72deg, #5494FC 50%, rgba(84, 148, 252, 0.20) 50%);
         background-image: linear-gradient(90deg, #5494FC 50%, transparent 50%), linear-gradient(18deg, #5494FC 50%, rgba(84, 148, 252, 0.20) 50%);
     }

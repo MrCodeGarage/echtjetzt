@@ -1,8 +1,33 @@
 import { Component,NgZone } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 
 import { AnimationOptions } from 'ngx-lottie';
 import {MongoService} from '../mongo.service';
 declare var Meteor;
+
+
+@Pipe({
+  name: 'shortDomain'
+})
+export class ShortDomainPipe implements PipeTransform {
+
+  transform(url: string, args?: any): any {
+      if (url) {
+          if (url.length > 3) {
+              let result;
+              let match;
+              if (match = url.match(/^(?:https?:\/\/)?(?:www\.)?([^:\/\n?=]+)/im)) {
+                  result = match[1];
+                  if (match = result.match(/^[^.]+\.(.+\..+)$/))
+                      result = match[1];
+              }
+              return result;
+          }
+          return url;
+      }
+      return url;
+  }
+}
 
 @Component({
   selector: 'app-home',
@@ -14,6 +39,7 @@ export class HomePage {
   public switchLongText = false;
   public switchResult   = 1;
   public currentId      = "";
+  public switchMode     = 2;
 
   answer = {
     percent:50,
@@ -36,7 +62,6 @@ export class HomePage {
 
   timi;
   onChange(){
-    console.log("adsa");
     if(typeof this.timi !== "undefined"){
       clearTimeout(this.timi);
     }
@@ -47,10 +72,11 @@ export class HomePage {
         if(isURL === true){
           this.mo.colObsJob.insert({ 
             "text" : this.inputText, 
-            "isHTML" : true, 
+            "isUrl" : true, 
             "link" : this.inputText, 
             "ans" : null, 
-            "status" : 1.0
+            "status" : 1.0,
+            "crawler":null
           }).toPromise().then((data)=>{
             Meteor.call("sendToUrlService",data,this.inputText);
             this.getData(data);
@@ -58,10 +84,11 @@ export class HomePage {
         }else{
           this.mo.colObsJob.insert({ 
             "text" : this.inputText, 
-            "isHTML" : false, 
+            "isUrl" : false, 
             "link" : "", 
             "ans" : null, 
-            "status" : 2.0
+            "status" : 2.0,
+            "crawler":null
           }).toPromise().then((data)=>{
             this.getData(data);
           });
@@ -115,7 +142,7 @@ export class HomePage {
           if(data.length > 0){
             this.answer = data[0].ans;
             this.switchResult = 3;
-            this.mo.colObsJob.remove({"_id":data[0]._id})
+           // this.mo.colObsJob.remove({"_id":data[0]._id})
             this.ngZone.run(() => {});
           }
         },1000);
