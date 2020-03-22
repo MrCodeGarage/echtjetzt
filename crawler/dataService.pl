@@ -25,11 +25,7 @@ our %cleaner = (
 # Default cleanup cascade
 our $default = ['meta', 'main', 'links'];
 
-plugin 'Config' => {
-  default => {
-    pageFile => app->home->child('Data', 'Linkliste_KIvsVirus.csv')->to_string
-  }
-};
+plugin 'Config';
 
 hook before_server_start => sub ($server, $app) {
   app->init_config;
@@ -39,6 +35,9 @@ helper init_config => sub ($c) {
   my $app = $c->app;
   # Create in-memory map of credible sources
   # based on the pages to crawl
+
+  $app->config(pageFile => $app->home->child('Data', 'Linkliste_KIvsVirus.csv')->to_string);
+
   my $pages = $app->config('pages') // [];
 
   # In addition to the config file (maybe instead)
@@ -47,10 +46,14 @@ helper init_config => sub ($c) {
     my $data = Mojo::CSV->new->slurp_body($page_file);
 
     # Add each page to the config
-    $data->each(
+    $data->map(
       sub {
-        $_ = map {$_ =~ s/\s+$//; $_ =~ s/^\s+//; return $_} @$_;
-        say $_->[0];
+        s/\s+$//;
+        s/^\s+//;
+        $_;
+      }
+    )->each(
+      sub {
         push @$pages, {
           url => $_->[0],
           title => $_->[1],
@@ -77,6 +80,7 @@ helper init_config => sub ($c) {
 
   # Reset list of sources to crawl recursively
   $app->config(recursively => $recursively);
+
 
   # Reset list of credible sources
   $app->config(credible => $credible);
