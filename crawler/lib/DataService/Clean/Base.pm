@@ -220,6 +220,7 @@ sub get_main($params) {
   $params->{html}->at('*[class=~"o-content--main"]') //
   # rapefugees
   $params->{html}->at('#content') //
+  $params->{html}->at('#entry-content') //
   $params->{html}->at('article') //
   $params->{html}->at('main') //
   $params->{html}->at('div[class=~main]') //

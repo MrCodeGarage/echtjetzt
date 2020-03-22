@@ -36,7 +36,7 @@ sub run {
 
   my $cleaner = $app->config('cleaner');
   my $credible_hash = $app->config('credible');
-
+  my $recursively = $app->config('recursively');
   my $spider = WWW::Crawler::Mojo->new;
 
   # Store as http://jsonlines.org/
@@ -72,7 +72,8 @@ sub run {
         # Check if the job is a known host
         my $credible = Mojo::URL->new($link)->host;
 
-        if (exists $credible_hash->{$credible}) {
+        if (exists $credible_hash->{$credible}
+          && exists $recursively->{$credible}) {
 
           $spider->enqueue($link);
         };

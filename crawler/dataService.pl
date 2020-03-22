@@ -10,6 +10,7 @@ use DataService::Clean::Base;
 use Mojo::JSON qw'encode_json decode_json';
 use MongoDB;
 use Mojo::CSV;
+use Data::Dump qw/dump/;
 
 
 our $VERSION = 0.01;
@@ -62,6 +63,7 @@ helper init_config => sub ($c) {
   };
 
   my $credible = $app->config('credible') // {};
+  my $recursively = $app->config('recursively') // {};
   foreach (@$pages) {
     my $source = Mojo::URL->new($_->{url})->host;
     # Always take the lowest credibility value,
@@ -70,7 +72,11 @@ helper init_config => sub ($c) {
           || $credible->{$source} > $_->{cred}) {
       $credible->{$source} = $_->{cred};
     }
+    $recursively->{$source} = $_->{crawl};
   };
+
+  # Reset list of sources to crawl recursively
+  $app->config(recursively => $recursively);
 
   # Reset list of credible sources
   $app->config(credible => $credible);
@@ -189,7 +195,7 @@ get '/clean' => sub ($c) {
   # TODO:
   #   Validate input
   # TODO:
-  #   Ensure this is an absolue URL
+  #   Ensure this is an absolute URL
   my $url = $c->param('url');
 
   # Fetch the data
