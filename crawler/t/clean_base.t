@@ -29,7 +29,8 @@ HTML
 my $dumm = <<TEXT;
 Example
 Ich bin Inhalt!
-Nix führt intern, aber http://example.com/kaffee?query=kanne und dies http://external.example.com extern weiter.
+Nix führt intern, aber http://example.com/kaffee?query=kanne
+und dies http://external.example.com extern weiter.
 a
 b
 TEXT
