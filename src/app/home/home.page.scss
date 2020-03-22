@@ -89,7 +89,7 @@
                 left: 0px;
                 top: 0px;
                 height: 100%;
-                z-index: 5;
+                z-index: 15;
                 width: 100%;
             }
         }
@@ -241,7 +241,7 @@
                 left: 0px;
                 top: 0px;
                 height: 100%;
-                z-index: 5;
+                z-index: 15;
                 width: 100%;
                 >div:first-of-type {
                     margin-top: 20px;
@@ -379,6 +379,7 @@
     }
     
     .mybgh {
+        z-index: 1;
         position: absolute;
         bottom: 22px;
         min-width: 502px;
@@ -387,6 +388,7 @@
     }
     
     .mybgi {
+        z-index: 1;
         position: absolute;
         bottom: 22px;
         width: 100%;
