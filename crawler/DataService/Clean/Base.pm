@@ -236,7 +236,7 @@ sub get_main($params) {
     "#comment-form-wrap",
     ".adsense_single",
     # http://www.rapefugees.net/
-    "addtoany_content", " addtoany_content_bottom"
+    "addtoany_content", " addtoany_content_bottom",
     # blog.halle-leaks.net
     ".shariff",
 
