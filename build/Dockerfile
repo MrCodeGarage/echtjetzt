@@ -11,15 +11,13 @@ COPY www /usr/share/nginx/html/www
 RUN mkdir /usr/src/app
 RUN mkdir /usr/src/tempapp
 COPY . /usr/src/tempapp/
-RUN cd /usr/src/tempapp/crawler
-RUN cpanm -v utf8::all
-RUN cpanm -v HTTP::Tiny
-RUN cpanm -v HTML::Restrict
-RUN cpanm -v Mojolicious
-RUN cpanm -v Mojo::CSV
-RUN cpanm -v WWW::Crawler::Mojo
-RUN ls
-RUN prove -lr t
+RUN cd /usr/src/tempapp/crawler && cpanm -v utf8::all
+RUN cd /usr/src/tempapp/crawler && cpanm -v HTTP::Tiny
+RUN cd /usr/src/tempapp/crawler && cpanm -v HTML::Restrict
+RUN cd /usr/src/tempapp/crawler && cpanm -v Mojolicious
+RUN cd /usr/src/tempapp/crawler && cpanm -v Mojo::CSV
+RUN cd /usr/src/tempapp/crawler && cpanm -v WWW::Crawler::Mojo
+RUN cd /usr/src/tempapp/crawler && cpanm -v prove -lr t
 RUN tar -xvzf /usr/src/tempapp/api.tar.gz -C /usr/src/app/
 RUN npm install pm2 -g
 ENV PM2_PUBLIC_KEY yvrvn72bu2lkm32
