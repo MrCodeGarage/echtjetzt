@@ -133,8 +133,12 @@ sub finish($params) {
     $params->{html}->find("b")->each(sub {$_->tag("strong")});
     $params->{html}->find("b")->each(sub {$_->tag("strong")});
     # remove empty elements
-    $params->{html}->find("*")->each(sub {if ($_->all_text() =~ m/\A\s*\Z/m){ $_->remove()}});
-    $params->{html}->find("li,p,div,h1,h2,h3,h4,h5,h6,td,th")->each(sub {$_->append_content(" ")});
+    $params->{html}->find("*")->each(sub {
+        my $me = $_;
+        if ($me->all_text() =~ m/\A\s*\Z/m){
+            $me->remove()
+        }});
+    $params->{html}->find("li,p,div,td,th,h1,h2,h3,h4,h5,h6")->each(sub {$_->append_content(" ")});
     $params->{text} = normalize_space(
         $plain->process($params->{html}->to_string()));
 
