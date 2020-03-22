@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use utf8;
 use utf8::all;
-# use open qw( :encoding(UTF-8) :std );
+use open qw( :encoding(UTF-8) :std );
 
 # binmode(STDIN,":utf8");
 # binmode(STDERR,":utf8");
@@ -121,7 +121,6 @@ sub get_links($params) {
   my $link_candidates = $params->{html}->find("a")->map(attr => "href")->compact()->grep(\&is_www_link);
   my $external = $link_candidates->grep(sub{!is_local_link($_, $params->{base_url})})->compact();
   $params->{external_links} = $external->to_array();
-  dump $params->{external_links};
   $params->{sources} = $external->map(sub {URI->new($_)->host()});
   $params->{internal_links} = $link_candidates->map(sub{is_local_link($_, $params->{base_url})})->compact()->to_array();
   return $params;
