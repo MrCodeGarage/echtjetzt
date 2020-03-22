@@ -41,8 +41,10 @@ helper init_config => sub ($c) {
     $data->each(
       sub {
         push @$pages, {
-          url => $_->[2],
-          cred => $_->[4],
+          url => $_->[0],
+          title => $_->[1],
+          cred => $_->[2],
+          crawl => $_->[3],
           freq => ''
         };
       }
@@ -124,9 +126,9 @@ helper 'clean' => sub ($c, $cascade, $res) {
   #   This doesn't use the crawler defined by Bernhard for now!
 
   # Initialize cleaned data
-  my $enc = guess_encoding($res->{body});
+  my $enc = guess_encoding($res->{body}); # may return "or"-separated list
   my $body = $res->{body};
-  if ($enc =~ /utf-\S+/i) {
+  if ($enc =~ /utf-\S+/i) {  # outsmart guess_encoding
     $body = Encode::decode($&, $body);
   }
   my $data = {
