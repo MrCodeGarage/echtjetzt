@@ -2,6 +2,8 @@
 use Mojolicious::Lite;
 use Mojo::Base -signatures;
 use DataService::Clean::Base;
+use Mojo::JSON qw'encode_json decode_json';
+use MongoDB;
 use Mojo::CSV;
 
 our $VERSION = 0.01;
@@ -71,6 +73,13 @@ helper init_config => sub ($c) {
 };
 
 
+# Create database helper
+helper db_client => sub ($c) {
+  return undef unless $c->config('db');
+  state $db = MongoDB->connect($c->config('db'));
+};
+
+
 # Register crawl command
 push @{app->commands->namespaces}, 'DataService';
 
@@ -122,9 +131,6 @@ use Encode::Guess qw/ ascii cp1252 iso-8859-1 utf-8 utf-16/;
 # Clean resource with several cleaners
 helper 'clean' => sub ($c, $cascade, $res) {
 
-  # TODO:
-  #   This doesn't use the crawler defined by Bernhard for now!
-
   # Initialize cleaned data
   my $enc = guess_encoding($res->{body}); # may return "or"-separated list
   my $body = $res->{body};
@@ -147,8 +153,11 @@ helper 'clean' => sub ($c, $cascade, $res) {
   };
 
   # Strip unimportant data
+  $data = DataService::Clean::Base::finish($data);
 
-  return DataService::Clean::Base::finish($data);
+  # This is a workaround to remove all blessed references
+  # to ensure all data can be serialized by BSON
+  return decode_json(encode_json($data));
 };
 
 
@@ -201,15 +210,40 @@ post '/clean/:id' => sub ($c) {
 
   # An error occurred
   if ($res->{error}) {
-    return $c->render(json => $res)
+    return $c->render(
+      status => 400,
+      json => $res
+    );
   };
 
-  # TODO:
-  #   use base cleaner cascade
+  # Clean the data
   my $clean_data = $c->clean($default, $res);
 
-  # TODO:
-  #   Store value in database
+  # Update the job
+  my $db = $c->db_client->get_database('ki');
+  my $coll = $db->get_collection("jobs");
+  my $id = $c->stash('id');
+  $res = $coll->update_one({
+    _id => $id
+  },{
+    '$set' => {
+      text => $clean_data->{text},
+      crawler => $clean_data,
+      status => 3
+    }
+  });
+
+  # Check for update
+  if ($res->matched_count == 0) {
+    return $c->render(
+      status => 400,
+      json => {
+        error => 'Unable to find job ' . $id
+      }
+    );
+  };
+
+  # return the result
   return $c->render(
     json => $clean_data
   );
