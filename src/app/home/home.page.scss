@@ -52,7 +52,7 @@
             }
         }
         ion-footer {
-            background: var(transparent)!important;
+            background: #F0F0F0!important;
             >div {
                 display: flex;
                 justify-content: space-around;
@@ -183,7 +183,7 @@
     
     @media (max-width: 800px) {
         ion-footer {
-            background: var(transparent)!important;
+            background: #F0F0F0!important;
             >div {
                 display: flex;
                 justify-content: space-around;

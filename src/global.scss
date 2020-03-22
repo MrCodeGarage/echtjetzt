@@ -43,3 +43,14 @@ body {
 app-home {
     background: transparent;
 }
+
+app-root {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 100%;
+    >img {
+        object-fit: cover;
+        height: 90%;
+    }
+}
