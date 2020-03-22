@@ -8,6 +8,7 @@ my $dom = Mojo::DOM->new(<<HTML);
 <!DOCTYPE html>
 <html>
   <head>
+    <meta http-equiv='last-modified' content='Sat, 21 Mar 2020 11:55:00 CET'>
     <title>Example</title>
   </head>
   <body>
@@ -29,6 +30,7 @@ HTML
 my $obj = DataService::Clean::Base::get_meta({
   url => 'http://example.com',
   base_url => "",
+  date => "",
   html => $dom,
   external_links => [],
   internal_links => [],
@@ -38,7 +40,11 @@ my $obj = DataService::Clean::Base::get_meta({
 
 is_deeply([], $obj->{internal_links});
 is_deeply([], $obj->{external_links});
-is_deeply({ title => 'Example' }, $obj->{metadata});
+is_deeply({
+    date => 'Sat, 21 Mar 2020 11:55:00 CET',
+    title => 'Example'
+  },
+  $obj->{metadata});
 is_deeply({}, $obj->{header});
 is_deeply('http://example.com', $obj->{url});
 ok(!$obj->{text});
@@ -49,7 +55,11 @@ like($obj->{html}->to_string, qr'^<!DOCTYPE html>');
 $obj = DataService::Clean::Base::get_main($obj);
 is_deeply([], $obj->{internal_links});
 is_deeply([], $obj->{external_links});
-is_deeply({ title => 'Example' }, $obj->{metadata});
+is_deeply({
+    date => 'Sat, 21 Mar 2020 11:55:00 CET',
+    title => 'Example'
+  },
+  $obj->{metadata});
 is_deeply({}, $obj->{header});
 ok(!$obj->{text});
 is_deeply('http://example.com', $obj->{url});
@@ -61,7 +71,11 @@ unlike($obj->{html}->to_string, qr!<nav>!);
 $obj = DataService::Clean::Base::get_links($obj);
 is_deeply(['http://example.com/weiter/2'], $obj->{internal_links});
 is_deeply(['http://external.example.com'], $obj->{external_links});
-is_deeply({ title => 'Example' }, $obj->{metadata});
+is_deeply({
+    date => 'Sat, 21 Mar 2020 11:55:00 CET',
+    title => 'Example'
+  },
+  $obj->{metadata});
 is_deeply({}, $obj->{header});
 ok(!$obj->{text});
 is_deeply('http://example.com', $obj->{url});
@@ -73,7 +87,11 @@ unlike($obj->{html}->to_string, qr!<nav>!);
 $obj = DataService::Clean::Base::finish($obj);
 is_deeply(['http://example.com/weiter/2'], $obj->{internal_links});
 is_deeply(['http://external.example.com'], $obj->{external_links});
-is_deeply({ title => 'Example' }, $obj->{metadata});
+is_deeply({
+    date => 'Sat, 21 Mar 2020 11:55:00 CET',
+    title => 'Example'
+  },
+  $obj->{metadata});
 is_deeply({}, $obj->{header});
 is($obj->{text}, 'Ich bin Inhalt! Dies führt intern und dies führt extern weiter.');
 is_deeply('http://example.com', $obj->{url});

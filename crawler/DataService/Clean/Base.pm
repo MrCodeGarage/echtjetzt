@@ -45,8 +45,28 @@ sub get_document($url_string, $recursive) {
     $doc = finish($doc);
   }
 }
+sub find_meta_tag($params, $value) {
+  $value = "\Q$value";
+  $params->{html}->find("meta")->first(sub {
+    $_->attr("http-equiv") =~ m/$value/i || $_->attr("name") =~ m/$value/i;
+  });
+}
 
 sub get_meta($params) {
+  my $date = "";
+  # determine date
+  $date = $params->{header}->{"Last-Modified"};
+  if (!defined $date || !$date) {
+    my $date_el =
+      find_meta_tag($params, "last-modified") //
+      find_meta_tag($params, "date");
+    if (defined $date_el) {
+      $date = $date_el->attr("content");
+    }
+  }
+  $params->{metadata}->{date} = $date // "";
+
+  # dermine title
   my $title_el = $params->{html}->at("title") //
     $params->{html}->at("h1.title,h1.titel,div.title,div.titel");
   my $title = "";
@@ -106,32 +126,36 @@ sub normalize_space($text) {
   return $text;
 }
 
-# get plain text and simple HTML
-sub finish($params) {
-  my $plain = HTML::Restrict->new();
-  my $moderate = HTML::Restrict->new(rules => {
+my $moderate_rules = {
       strong => [],
       em => [],
-      main => [],
       h1 => [],
       h2 => [],
       h3 => [],
       h4 => [],
-    }
-  );
+    };
+my $plain = HTML::Restrict->new();
+my $moderate = HTML::Restrict->new(rules => $moderate_rules);
+
+# get plain text and simple HTML
+sub finish($params) {
   $params->{html}->find("script,stylesheet")->each(sub { $_->remove()});
 
   # normalize <i>/<b>
   $params->{html}->find("i")->each(sub {$_->tag("em")});
   $params->{html}->find("b")->each(sub {$_->tag("strong")});
   $params->{html}->find("b")->each(sub {$_->tag("strong")});
+  # make sure word boundaries are respected
+  $params->{html}->find("li,p,div,td,th,h1,h2,h3,h4,h5,h6,br,hr")->each(
+    sub {
+      $_->append_content(" ")
+    });
   # remove empty elements
   $params->{html}->find("*")->each(sub {
       my $me = $_;
       if ($me->all_text() =~ m/\A\s*\Z/m){
         $me->remove()
       }});
-  $params->{html}->find("li,p,div,td,th,h1,h2,h3,h4,h5,h6")->each(sub {$_->append_content(" ")});
   $params->{text} = normalize_space(
     $plain->process($params->{html}->to_string()));
 
@@ -139,7 +163,7 @@ sub finish($params) {
   # $params->{html};
   my $dom = Mojo::DOM->new;
   my $html_dom = $dom->parse("<main></main>");
-  $html_dom->content($html_string);
+  $html_dom->at("main")->content($html_string);
   $params->{html} = $html_dom->to_string();
 
   return $params;
