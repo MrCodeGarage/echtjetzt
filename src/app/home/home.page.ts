@@ -50,7 +50,8 @@ export class HomePage {
             "isHTML" : true, 
             "link" : this.inputText, 
             "ans" : null, 
-            "status" : 1.0
+            "status" : 1.0,
+            "crawler":null
           }).toPromise().then((data)=>{
             Meteor.call("sendToUrlService",data,this.inputText);
             this.getData(data);
@@ -61,7 +62,8 @@ export class HomePage {
             "isHTML" : false, 
             "link" : "", 
             "ans" : null, 
-            "status" : 2.0
+            "status" : 2.0,
+            "crawler":null
           }).toPromise().then((data)=>{
             this.getData(data);
           });
