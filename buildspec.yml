@@ -21,6 +21,7 @@ phases:
       - npm install --no-progress
       - cd ../
       #      - npm install #check if needed!!!
+      - npm run preinstall
       - npm install --no-progress # check if "build:prod" has to be activated
       - npm install ionic -g
       - npm install -g meteor-client-bundler
@@ -31,8 +32,8 @@ phases:
       - aws --version
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
       # check, who runs the build and get the environment
-      - BRANCH_NAME=$(echo $CODEBUILD_INITIATOR | cut -d "-" -f 4)
-      - APPLICATION_NAME=$(echo $CODEBUILD_INITIATOR | cut -d "-" -f 3)
+      - BRANCH_NAME=ki
+      - APPLICATION_NAME=kifakenews
       - REPOSITORY_URI=191014696307.dkr.ecr.eu-central-1.amazonaws.com/ki
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=$BRANCH_NAME}
@@ -41,28 +42,31 @@ phases:
       - cd ./api
       - TOOL_NODE_FLAGS="--max_old_space_size=4096 --min_semi_space_size=8 --max_semi_space_size=256" meteor build  ../build --architecture os.linux.x86_64 --server-only --allow-superuser;
       - cd ../
-      - ionic build --aot --service-worker
+      - ionic build --prod
       - mkdir ./build/www
       - cp -rf ./www/* ./build/www;
+      - mkdir ./build/crawler
+      - cp -rf ./crawler/* ./build/crawler;
       # - cd ./build Docker
       - echo Building the Docker image...
-      - docker build -t $REPOSITORY_URI:$BRANCH_NAME ./build
+      - docker build -t ki ./build
       # Tag the built image
-      - docker tag $REPOSITORY_URI:$BRANCH_NAME $REPOSITORY_URI:$IMAGE_TAG
+      - docker tag ki:latest 191014696307.dkr.ecr.eu-central-1.amazonaws.com/ki:latest
+
+
 
   post_build:
     commands:
       - echo Build completed on $(date)
       - echo Pushing the Docker images...
-      - docker push $REPOSITORY_URI:$BRANCH_NAME
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - docker push 191014696307.dkr.ecr.eu-central-1.amazonaws.com/ki:latest
       - echo Creating Image Definitions File for current $BRANCH_NAME stage #has to be done here so we can have $param in json
       - | #readability
         {
          echo '['
          echo ' {'
          echo '    "name": "'$APPLICATION_NAME'-'$BRANCH_NAME'-container",'
-         echo '    "imageUri": "'$REPOSITORY_URI':'$BRANCH_NAME'"'
+         echo '    "imageUri": "'$REPOSITORY_URI':'latest'"'
          echo ' }'
          echo ']'
         } > imagedefinitions.json

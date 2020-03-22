@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">EchtJetzt</string>
+    <string name="title_activity_main">EchtJetzt</string>
+    <string name="package_name">com.cgs.echtjetzt</string>
+    <string name="custom_url_scheme">com.cgs.echtjetzt</string>
+</resources>

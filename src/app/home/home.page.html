@@ -1,20 +1,357 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
+<ion-header class="dekstop">
+    <div class="logoheader middle">
+        <div>
+            <img src="/assets/EchtJetztLogoSchrift.svg" />
+        </div>
+        <div>
+
+        </div>
+
+    </div>
 </ion-header>
+<ion-content class="dekstop dekstopmain">
+    <div>
+        <div class="searchContainer middle">
+            <div>
+                <textarea (input)="onChange()" [(ngModel)]="inputText" placeholder="Text oder URL einfügen"></textarea>
+            </div>
+            <div>
+                <ion-button class="cpm" fill="clear">
+                    <i style="color:#F26565" class="mdi mdi-chevron-right mdi-48px"></i>
+                </ion-button>
+            </div>
+            <div *ngIf="switchResult == 1">
+                <h1>Willkommen bei <span style="font-weight: bold;">EchtJetzt</span></h1>
+                <div style="font-style: italic;">
+                    Überprüfen Sie kostenlos Texte über Corona/Corvid 19 auf ihren Wahrheitsgehalt.
+                </div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+                <ion-button class="cpsm" fill="clear">
+                    <i class="mdi mdi-content-copy mdi-24px"></i>
+                </ion-button>
+                <ion-button class="csm" fill="clear">
+                    <i class="mdi mdi-share-variant mdi-24px"></i>
+                </ion-button>
+            </div>
+            <div class="loaderCls" *ngIf="switchResult == 2">
+                <ng-lottie [options]="optionsLoader"></ng-lottie>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+            </div>
+            <div style="    margin-left: 0px;" class="styleOutput" *ngIf="switchResult == 3">
+                <div style="margin-top: 20px;">
+                    <div style="    margin-top: 0px;" class="radialProgressBar progress-{{answer.percent}}">
+                        <div class="overlay">{{answer.percent}}%</div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <div style="    margin-bottom: 25px;">
+                        Diese Nachricht ist zu {{answer.percent}}% kein Fake. Hier sind ähnliche Artikel aus vertrauenswürdigen Quellen:
+                    </div>
+                    <div class="link" *ngFor="let item of answer.quellen">
+                        <h2><span>Quelle {{item.quelle}} (<a href="{{item.link}}" target=”_blank”>{{item.link |shortDomain}}</a>)</span></h2>
+                        <div>
+                            <div [style.width.%]="item.percent">
+
+                            </div>
+                        </div>
+                        <label style="    text-align: right;
+                        display: inline-block;
+                        width: 100%;">Stand {{item.stand | date:'dd.MM.yyyy HH:mm'}}</label>
+                    </div>
+                </div>
+
+
+                <ion-button class="cpm" fill="clear">
+                    <i class="mdi mdi-content-copy mdi-24px"></i>
+                </ion-button>
+                <ion-button class="csm" fill="clear">
+                    <i class="mdi mdi-share-variant mdi-24px"></i>
+                </ion-button>
+
+            </div>
+        </div>
+        <div class="middle2 overus" *ngIf="switchMode == 1">
+            <h1>Datenschutz</h1>
+            <h2>ECHTJETZT - DATENSCHUTZERKLÄRUNG</h2>
+            <p>Mit der folgenden Datenschutzerklärung möchten wir Sie darüber aufklären, welche Arten Ihrer personenbezogenen Daten (nachfolgend auch kurz als "Daten“ bezeichnet) wir zu welchen Zwecken und in welchem Umfang verarbeiten. Die Datenschutzerklärung
+                gilt für alle von uns durchgeführten Verarbeitungen personenbezogener Daten, sowohl im Rahmen der Erbringung unserer Leistungen als auch insbesondere auf unseren Webseiten, in mobilen Applikationen sowie innerhalb externer Onlinepräsenzen,
+                wie z.B. unserer Social-Media-Profile (nachfolgend zusammenfassend bezeichnet als "Onlineangebot“).</p>
+            <p>Die verwendeten Begriffe sind nicht geschlechtsspezifisch.</p>
+            <p>Stand: 22. März 2020</p>
+            <h2>Inhaltsübersicht</h2>
+            <ul class="index">
+                <li><a class="index-link" href="#m14">Einleitung</a></li>
+                <li><a class="index-link" href="#m3">Verantwortlicher</a></li>
+                <li><a class="index-link" href="#mOverview">Übersicht der Verarbeitungen</a></li>
+                <li><a class="index-link" href="#m13">Maßgebliche Rechtsgrundlagen</a></li>
+                <li><a class="index-link" href="#m27">Sicherheitsmaßnahmen</a></li>
+                <li><a class="index-link" href="#m182">Kontaktaufnahme</a></li>
+                <li><a class="index-link" href="#m225">Bereitstellung des Onlineangebotes und Webhosting</a></li>
+                <li><a class="index-link" href="#m15">Änderung und Aktualisierung der Datenschutzerklärung</a></li>
+                <li><a class="index-link" href="#m10">Rechte der betroffenen Personen</a></li>
+            </ul>
+            <h2 id="m3">Verantwortlicher</h2>
+            <p>Dominik Bruckner<br>Gravelottestraße 13<br>81667 München<br>Deutschland</p>
+            <p><strong>E-Mail-Adresse</strong>: <a href="mailto:bruckner.dominik@gmx.de">bruckner.dominik@gmx.de</a></p>
+            <p><strong>Impressum</strong>: <a href="http://echtjetzt.code-garage-solutions.de/impressum" target="_blank">http://echtjetzt.code-garage-solutions.de/impressum</a></p>
+            <h2 id="mOverview">Übersicht der Verarbeitungen</h2>
+            <p>Die nachfolgende Übersicht fasst die Arten der verarbeiteten Daten und die Zwecke ihrer Verarbeitung zusammen und verweist auf die betroffenen Personen.</p>
+            <h3>Arten der verarbeiteten Daten</h3>
+            <ul>
+                <li>Inhaltsdaten (z.B. Texteingaben, Fotografien, Videos).</li>
+                <li>Meta-/Kommunikationsdaten (z.B. Geräte-Informationen, IP-Adressen).</li>
+                <li>Nutzungsdaten (z.B. besuchte Webseiten, Interesse an Inhalten, Zugriffszeiten).</li>
+            </ul>
+            <h3>Kategorien betroffener Personen</h3>
+            <ul>
+                <li>Kommunikationspartner.</li>
+                <li>Nutzer (z.B. Webseitenbesucher, Nutzer von Onlinediensten).</li>
+            </ul>
+            <h3>Zwecke der Verarbeitung</h3>
+            <ul>
+                <li>Kontaktanfragen und Kommunikation.</li>
+            </ul>
+            <h3 id="m13">Maßgebliche Rechtsgrundlagen</h3>
+            <p>Im Folgenden teilen wir die Rechtsgrundlagen der Datenschutzgrundverordnung (DSGVO), auf deren Basis wir die personenbezogenen Daten verarbeiten, mit. Bitte beachten Sie, dass zusätzlich zu den Regelungen der DSGVO die nationalen Datenschutzvorgaben
+                in Ihrem bzw. unserem Wohn- und Sitzland gelten können. Sollten ferner im Einzelfall speziellere Rechtsgrundlagen maßgeblich sein, teilen wir Ihnen diese in der Datenschutzerklärung mit.</p>
+            <ul>
+                <li><strong>Vertragserfüllung und vorvertragliche Anfragen (Art. 6 Abs. 1 S. 1 lit. b. DSGVO)</strong> - Die Verarbeitung ist für die Erfüllung eines Vertrags, dessen Vertragspartei die betroffene Person ist, oder zur Durchführung vorvertraglicher
+                    Maßnahmen erforderlich, die auf Anfrage der betroffenen Person erfolgen.</li>
+                <li><strong>Berechtigte Interessen (Art. 6 Abs. 1 S. 1 lit. f. DSGVO)</strong> - Die Verarbeitung ist zur Wahrung der berechtigten Interessen des Verantwortlichen oder eines Dritten erforderlich, sofern nicht die Interessen oder Grundrechte
+                    und Grundfreiheiten der betroffenen Person, die den Schutz personenbezogener Daten erfordern, überwiegen.</li>
+            </ul>
+            <p><strong>Nationale Datenschutzregelungen in Deutschland</strong>: Zusätzlich zu den Datenschutzregelungen der Datenschutz-Grundverordnung gelten nationale Regelungen zum Datenschutz in Deutschland. Hierzu gehört insbesondere das Gesetz zum
+                Schutz vor Missbrauch personenbezogener Daten bei der Datenverarbeitung (Bundesdatenschutzgesetz – BDSG). Das BDSG enthält insbesondere Spezialregelungen zum Recht auf Auskunft, zum Recht auf Löschung, zum Widerspruchsrecht, zur Verarbeitung
+                besonderer Kategorien personenbezogener Daten, zur Verarbeitung für andere Zwecke und zur Übermittlung sowie automatisierten Entscheidungsfindung im Einzelfall einschließlich Profiling. Des Weiteren regelt es die Datenverarbeitung für
+                Zwecke des Beschäftigungsverhältnisses (§ 26 BDSG), insbesondere im Hinblick auf die Begründung, Durchführung oder Beendigung von Beschäftigungsverhältnissen sowie die Einwilligung von Beschäftigten. Ferner können Landesdatenschutzgesetze
+                der einzelnen Bundesländer zur Anwendung gelangen.</p>
+            <h2 id="m27">Sicherheitsmaßnahmen</h2>
+            <p>Wir treffen nach Maßgabe der gesetzlichen Vorgaben unter Berücksichtigung des Stands der Technik, der Implementierungskosten und der Art, des Umfangs, der Umstände und der Zwecke der Verarbeitung sowie der unterschiedlichen Eintrittswahrscheinlichkeiten
+                und des Ausmaßes der Bedrohung der Rechte und Freiheiten natürlicher Personen geeignete technische und organisatorische Maßnahmen, um ein dem Risiko angemessenes Schutzniveau zu gewährleisten.</p>
+            <p>Zu den Maßnahmen gehören insbesondere die Sicherung der Vertraulichkeit, Integrität und Verfügbarkeit von Daten durch Kontrolle des physischen und elektronischen Zugangs zu den Daten als auch des sie betreffenden Zugriffs, der Eingabe, der
+                Weitergabe, der Sicherung der Verfügbarkeit und ihrer Trennung. Des Weiteren haben wir Verfahren eingerichtet, die eine Wahrnehmung von Betroffenenrechten, die Löschung von Daten und Reaktionen auf die Gefährdung der Daten gewährleisten.
+                Ferner berücksichtigen wir den Schutz personenbezogener Daten bereits bei der Entwicklung bzw. Auswahl von Hardware, Software sowie Verfahren entsprechend dem Prinzip des Datenschutzes, durch Technikgestaltung und durch datenschutzfreundliche
+                Voreinstellungen.
+            </p>
+            <p><strong>SSL-Verschlüsselung (https)</strong>: Um Ihre via unser Online-Angebot übermittelten Daten zu schützen, nutzen wir eine SSL-Verschlüsselung. Sie erkennen derart verschlüsselte Verbindungen an dem Präfix https:// in der Adresszeile
+                Ihres Browsers.</p>
+            <h2 id="m182">Kontaktaufnahme</h2>
+            <p>Bei der Kontaktaufnahme mit uns (z.B. per Kontaktformular, E-Mail, Telefon oder via soziale Medien) werden die Angaben der anfragenden Personen verarbeitet, soweit dies zur Beantwortung der Kontaktanfragen und etwaiger angefragter Maßnahmen
+                erforderlich ist.</p>
+            <p>Die Beantwortung der Kontaktanfragen im Rahmen von vertraglichen oder vorvertraglichen Beziehungen erfolgt zur Erfüllung unserer vertraglichen Pflichten oder zur Beantwortung von (vor)vertraglichen Anfragen und im Übrigen auf Grundlage der
+                berechtigten Interessen an der Beantwortung der Anfragen.</p>
+            <ul class="m-elements">
+                <li><strong>Verarbeitete Datenarten:</strong> Bestandsdaten (z.B. Namen, Adressen), Kontaktdaten (z.B. E-Mail, Telefonnummern), Inhaltsdaten (z.B. Texteingaben, Fotografien, Videos).</li>
+                <li><strong>Betroffene Personen:</strong> Kommunikationspartner.</li>
+                <li><strong>Zwecke der Verarbeitung:</strong> Kontaktanfragen und Kommunikation.</li>
+                <li><strong>Rechtsgrundlagen:</strong> Vertragserfüllung und vorvertragliche Anfragen (Art. 6 Abs. 1 S. 1 lit. b. DSGVO), Berechtigte Interessen (Art. 6 Abs. 1 S. 1 lit. f. DSGVO).</li>
+            </ul>
+            <h2 id="m225">Bereitstellung des Onlineangebotes und Webhosting</h2>
+            <p>Um unser Onlineangebot sicher und effizient bereitstellen zu können, nehmen wir die Leistungen von einem oder mehreren Webhosting-Anbietern in Anspruch, von deren Servern (bzw. von ihnen verwalteten Servern) das Onlineangebot abgerufen werden
+                kann. Zu diesen Zwecken können wir Infrastruktur- und Plattformdienstleistungen, Rechenkapazität, Speicherplatz und Datenbankdienste sowie Sicherheitsleistungen und technische Wartungsleistungen in Anspruch nehmen.</p>
+            <p>Zu den im Rahmen der Bereitstellung des Hostingangebotes verarbeiteten Daten können alle die Nutzer unseres Onlineangebotes betreffenden Angaben gehören, die im Rahmen der Nutzung und der Kommunikation anfallen. Hierzu gehören regelmäßig die
+                IP-Adresse, die notwendig ist, um die Inhalte von Onlineangeboten an Browser ausliefern zu können, und alle innerhalb unseres Onlineangebotes oder von Webseiten getätigten Eingaben.</p>
+            <p><strong>Erhebung von Zugriffsdaten und Logfiles</strong>: Wir selbst (bzw. unser Webhostinganbieter) erheben Daten zu jedem Zugriff auf den Server (sogenannte Serverlogfiles). Zu den Serverlogfiles können die Adresse und Name der abgerufenen
+                Webseiten und Dateien, Datum und Uhrzeit des Abrufs, übertragene Datenmengen, Meldung über erfolgreichen Abruf, Browsertyp nebst Version, das Betriebssystem des Nutzers, Referrer URL (die zuvor besuchte Seite) und im Regelfall IP-Adressen
+                und der anfragende Provider gehören.</p>
+            <p>Die Serverlogfiles können zum einen zu Zwecken der Sicherheit eingesetzt werden, z.B., um eine Überlastung der Server zu vermeiden (insbesondere im Fall von missbräuchlichen Angriffen, sogenannten DDoS-Attacken) und zum anderen, um die Auslastung
+                der Server und ihre Stabilität sicherzustellen.</p>
+            <ul class="m-elements">
+                <li><strong>Verarbeitete Datenarten:</strong> Inhaltsdaten (z.B. Texteingaben, Fotografien, Videos), Nutzungsdaten (z.B. besuchte Webseiten, Interesse an Inhalten, Zugriffszeiten), Meta-/Kommunikationsdaten (z.B. Geräte-Informationen, IP-Adressen).</li>
+                <li><strong>Betroffene Personen:</strong> Nutzer (z.B. Webseitenbesucher, Nutzer von Onlinediensten).</li>
+                <li><strong>Rechtsgrundlagen:</strong> Berechtigte Interessen (Art. 6 Abs. 1 S. 1 lit. f. DSGVO).</li>
+            </ul>
+            <h2 id="m15">Änderung und Aktualisierung der Datenschutzerklärung</h2>
+            <p>Wir bitten Sie, sich regelmäßig über den Inhalt unserer Datenschutzerklärung zu informieren. Wir passen die Datenschutzerklärung an, sobald die Änderungen der von uns durchgeführten Datenverarbeitungen dies erforderlich machen. Wir informieren
+                Sie, sobald durch die Änderungen eine Mitwirkungshandlung Ihrerseits (z.B. Einwilligung) oder eine sonstige individuelle Benachrichtigung erforderlich wird.</p>
+            <p>Sofern wir in dieser Datenschutzerklärung Adressen und Kontaktinformationen von Unternehmen und Organisationen angeben, bitten wir zu beachten, dass die Adressen sich über die Zeit ändern können und bitten die Angaben vor Kontaktaufnahme zu
+                prüfen.
+            </p>
+            <h2 id="m10">Rechte der betroffenen Personen</h2>
+            <p>Ihnen stehen als Betroffene nach der DSGVO verschiedene Rechte zu, die sich insbesondere aus Art. 15 bis 18 und 21 DSGVO ergeben:</p>
+            <ul>
+                <li><strong>Widerspruchsrecht: Sie haben das Recht, aus Gründen, die sich aus Ihrer besonderen Situation ergeben, jederzeit gegen die Verarbeitung der Sie betreffenden personenbezogenen Daten, die aufgrund von Art. 6 Abs. 1 lit. e oder f DSGVO erfolgt, Widerspruch einzulegen; dies gilt auch für ein auf diese Bestimmungen gestütztes Profiling. Werden die Sie betreffenden personenbezogenen Daten verarbeitet, um Direktwerbung zu betreiben, haben Sie das Recht, jederzeit Widerspruch gegen die Verarbeitung der Sie betreffenden personenbezogenen Daten zum Zwecke derartiger Werbung einzulegen; dies gilt auch für das Profiling, soweit es mit solcher Direktwerbung in Verbindung steht.</strong></li>
+                <li><strong>Widerrufsrecht bei Einwilligungen:</strong> Sie haben das Recht, erteilte Einwilligungen jederzeit zu widerrufen.</li>
+                <li><strong>Auskunftsrecht:</strong> Sie haben das Recht, eine Bestätigung darüber zu verlangen, ob betreffende Daten verarbeitet werden und auf Auskunft über diese Daten sowie auf weitere Informationen und Kopie der Daten entsprechend den
+                    gesetzlichen Vorgaben.</li>
+                <li><strong>Recht auf Berichtigung:</strong> Sie haben entsprechend den gesetzlichen Vorgaben das Recht, die Vervollständigung der Sie betreffenden Daten oder die Berichtigung der Sie betreffenden unrichtigen Daten zu verlangen.</li>
+                <li><strong>Recht auf Löschung und Einschränkung der Verarbeitung:</strong> Sie haben nach Maßgabe der gesetzlichen Vorgaben das Recht, zu verlangen, dass Sie betreffende Daten unverzüglich gelöscht werden, bzw. alternativ nach Maßgabe der
+                    gesetzlichen Vorgaben eine Einschränkung der Verarbeitung der Daten zu verlangen.</li>
+                <li><strong>Recht auf Datenübertragbarkeit:</strong> Sie haben das Recht, Sie betreffende Daten, die Sie uns bereitgestellt haben, nach Maßgabe der gesetzlichen Vorgaben in einem strukturierten, gängigen und maschinenlesbaren Format zu erhalten
+                    oder deren Übermittlung an einen anderen Verantwortlichen zu fordern.</li>
+                <li><strong>Beschwerde bei Aufsichtsbehörde:</strong> Sie haben ferner nach Maßgabe der gesetzlichen Vorgaben das Recht, bei einer Aufsichtsbehörde, insbesondere in dem Mitgliedstaat Ihres gewöhnlichen Aufenthaltsorts, Ihres Arbeitsplatzes
+                    oder des Orts des mutmaßlichen Verstoßes Beschwerde einzulegen, wenn Sie der Ansicht sind, dass die Verarbeitung der Sie betreffenden personenbezogenen Daten gegen die DSGVO verstößt.</li>
+            </ul>
+            <p class="seal"><a title="Rechtstext von Dr. Schwenke - für weitere Informationen bitte anklicken." href="https://datenschutz-generator.de/?l=de" target="_blank">Erstellt mit kostenlosem Datenschutz-Generator.de von Dr. Thomas Schwenke</a></p>
+        </div>
+        <div class="middle2 overus" *ngIf="switchMode == 2">
+            <h1>Über Uns</h1>
+            <div>
+                <meta charset="UTF-8">
+                <div style="margin-bottom: 0px;">
+                    Du stößt häufig auf Nachrichten, bei denen Du nicht sicher bist, ob diese wahr sind? In Zeiten von <i>Fake News</i> kann man sich mittlerweile bei vielen Posts und Artikeln nicht mehr sicher sein. Um diese Unsicherheit zu beseitigen
+                    haben wir <b>EchtJetzt</b> geschaffen - eine Plattform für jeden, der schnell und einfach ohne viel Schnick-Schnack überprüfen möchte, ob ein Artikel eher wahr ist, oder eher zur Kategorie Fake News zählt.
+                </div>
+                ​
+                <div style="margin-bottom: 0px;">
+                    <h2 style="    margin: 0px;font-size:20px;font-weight:bold">Wer sind wir denn eigentlich?</h2> <br> Wir sind eine Gruppe aus ExpertInnen aus Data Science, Computerlinguistik, App Entwicklung und Design die ihre Superkräfte zum #WirvsVirus 2020 bündelt, um Dir in Zeiten von Corona die Möglichkeit
+                    zu geben Dich besser zu informieren.</div>
+                ​
+                <div style="margin-bottom: 0px;">
+                    <h2 style="    margin: 0px;font-size:20px;font-weight:bold">Wie ermitteln wir was wahr und was fake ist?</h2>
+                    <br> In diesen unsicheren Zeiten sorgen wir für größtmögliche Transparenz. Das machen wir nicht nur in unserer App sondern auch in der Art wie wir unser Vorgehen kommunizieren. So kannst Du dir selbst Gedanken machen, ob Du unserem
+                    Score vertrauen kannst. Unsere Datenbank erhält regelmäßig Artikel aus vertrauenswürdigen Quellen. Auf der anderen Seite füttern wir unsere KI bewusst mit Fake News damit sie lernt Echtes von Falschem zu unterscheiden. Für die Techies
+                    unter euch: Das Stichwort lautet NLP mittels
+                    <a href="https://en.wikipedia.org/wiki/BERT_(language_model)/">BERT</a>. Diese Artikel nutzen wir zusätzlich, um euch Quellen vorzuschlagen, die möglichst ähnlich zum übersendeten Artikel sind und gleichzeitig aus gesicherten Quellen
+                    stammen.
+                </div>
+                ​
+                <div style="margin-bottom: 20px;">
+                    Noch eine Bemerkung zum Schluss. Alles, was wir hier geschaffen haben, baut auf statistischen Modellen auf. Auch unsere KI kann einmal falsch liegen. Im Zweifel empfiehlt sich immer eine eigene Recherche auf vertrauenswürdigen Quellen.
+                </div>
+                ​
+                <div style="margin-bottom: 20px;">
+                    Euer <br> EchtJetzt-Team
+                </div>
+            </div>
+        </div>
+        <div class="middle2 overus" *ngIf="switchMode == 3">
+            <div class='impressum'>
+                <h1>Impressum</h1>
+                <p>Angaben gemäß § 5 TMG</p>
+                <p>Dominik Bruckner <br> Gravelottestraße 13<br> 81667 München <br>
+                </p>
+                <p> <strong>Vertreten durch: </strong><br> Dominik Bruckner<br>
+                </p>
+                <p><strong>Kontakt:</strong> <br> Telefon: +49-17634135164<br> E-Mail: <a href='mailto:bruckner.dominik@gmx.de'>bruckner.dominik@gmx.de</a><br>
+                </p>
+                <p><strong>Haftungsausschluss: </strong><br><br><strong>Haftung für Inhalte</strong><br><br> Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch
+                    keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet,
+                    übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den
+                    allgemeinen Gesetzen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir
+                    diese Inhalte umgehend entfernen.<br><br><strong>Haftung für Links</strong><br><br> Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte
+                    auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft.
+                    Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von
+                    Rechtsverletzungen werden wir derartige Links umgehend entfernen.<br><br><strong>Urheberrecht</strong><br><br> Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die
+                    Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur
+                    für den privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet.
+                    Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen.</p>
+                <br> Impressum vom <a href="https://www.impressum-generator.de">Impressum Generator</a> der <a href="https://www.kanzlei-hasselbach.de/">Kanzlei Hasselbach, Rechtsanwälte für Arbeitsrecht und Familienrecht</a>
+            </div>
+        </div>
+    </div>
+    <!--
+    <img style="    position: absolute;
+    top: 0px;
+    z-index: -1;
+    height: 100%;
+    width: 100%;" src="/assets/EchtJetztIllu6groß.png" />-->
 </ion-content>
+<ion-footer class="dekstop middle">
+    <div>
+        <div (click)="switchMode = 1">
+            <label>Datenschutz</label>
+        </div>
+        <div (click)="switchMode = 2">
+            <label>Über Uns</label>
+        </div>
+        <div (click)="switchMode = 3">
+            <label>Impressum</label>
+        </div>
+    </div>
+</ion-footer>
+<ion-header class="mobile">
+    <div class="logoheader">
+        <div>
+            <img src="/assets/EchtJetztLogoSchrift.svg" />
+        </div>
+        <div>
+
+        </div>
+
+    </div>
+</ion-header>
+<ion-content class="mobile mobilemain">
+    <div>
+        <div>
+            <div *ngIf="switchLongText === false">
+                <input (input)="onChange()" [(ngModel)]="inputText" placeholder="Text oder URL einfügen" />
+                <ion-button (click)="paste()" class="cpm" fill="clear">
+                    <i class="mdi mdi-plus-circle-outline mdi-18px"></i>
+                </ion-button>
+            </div>
+            <div class="longTextArea" *ngIf="switchLongText === true">
+                <textarea placeholder="Text oder URL einfügen" (click)="paste()" [(ngModel)]="inputText">
+
+                </textarea>
+                <ion-button style="top: 0px;
+                position: absolute;
+                right: 0px;background: transparent;" class="cpm" fill="clear">
+                    <i class="mdi mdi-plus-circle-outline mdi-18px"></i>
+                </ion-button>
+            </div>
+        </div>
+        <div>
+            <ion-button (click)="switchLongText = !switchLongText" class="cpm" fill="clear">
+                <i class="mdi mdi-chevron-down mdi-48px"></i>
+            </ion-button>
+        </div>
+        <div *ngIf="switchResult == 1">
+            <h1>Willkommen bei EchtJetzt</h1>
+            <div>
+                Überprüfen Sie kostenlos Texte über Corona/Corvid 19 auf ihren Wahrheitsgehalt.
+            </div>
+
+            <ion-button class="cpsm" fill="clear">
+                <i class="mdi mdi-content-copy mdi-24px"></i>
+            </ion-button>
+            <ion-button class="csm" fill="clear">
+                <i class="mdi mdi-share-variant mdi-24px"></i>
+            </ion-button>
+        </div>
+        <div class="loaderCls" *ngIf="switchResult == 2">
+            <ng-lottie [options]="optionsLoader"></ng-lottie>
+
+        </div>
+        <div class="styleOutput" *ngIf="switchResult == 3">
+            <div>
+                <div class="radialProgressBar progress-{{answer.percent}}">
+                    <div class="overlay">{{answer.percent}}%</div>
+                </div>
+            </div>
+            <div>
+                Diese Nachricht ist zu {{answer.percent}}% kein Fake. Hier sind ähnliche Artikel aus vertrauenswürdigen Quellen:
+            </div>
+            <div class="link" *ngFor="let item of answer.quellen">
+                <h2><span>Quelle {{item.quelle}} (<a href="{{item.link}}" target=”_blank”>{{item.link |shortDomain}}</a>)</span></h2>
+                <div>
+                    <div [style.width.%]="answer.percent">
+
+                    </div>
+                </div>
+                <label>Stand {{item.stand | date:'dd.MM.yyyy HH:mm'}}</label>
+            </div>
+
+            <ion-button class="cpm" fill="clear">
+                <i class="mdi mdi-content-copy mdi-24px"></i>
+            </ion-button>
+            <ion-button class="csm" fill="clear">
+                <i class="mdi mdi-share-variant mdi-24px"></i>
+            </ion-button>
+
+        </div>
+    </div>
+</ion-content>
+<ion-footer class="mobile">
+    <div>
+        <div>
+            <label>Datenschutz</label>
+        </div>
+        <div>
+            <label>Über Uns</label>
+        </div>
+        <div>
+            <label>Impressum</label>
+        </div>
+    </div>
+</ion-footer>

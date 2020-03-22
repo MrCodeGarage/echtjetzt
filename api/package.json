@@ -9,15 +9,16 @@
     },
     "dependencies": {
         "@babel/runtime": "^7.7.6",
-        "jquery": "^3.4.1",
         "bcrypt": "^3.0.8",
         "fibers": "^4.0.2",
         "isomorphic-fetch": "^2.2.1",
+        "jquery": "^3.4.1",
+        "meteor-node-stubs": "^1.0.0",
+        "meteor-rxjs": "^0.4.14",
         "moment": "^2.24.0",
         "needle": "^2.3.2",
         "rxjs": "^6.5.4",
-        "underscore": "^1.9.2",
-        "meteor-node-stubs": "^1.0.0"
+        "underscore": "^1.9.2"
     },
     "meteor": {
         "mainModule": {}
