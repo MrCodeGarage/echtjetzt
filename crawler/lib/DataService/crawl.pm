@@ -73,7 +73,7 @@ sub run {
         my $credible = Mojo::URL->new($link)->host;
 
         if (exists $credible_hash->{$credible}
-          && exists $recursively->{$credible}) {
+          && $recursively->{$credible} // 0) {
 
           $spider->enqueue($link);
         };
