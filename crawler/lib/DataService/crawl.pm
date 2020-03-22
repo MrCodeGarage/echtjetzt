@@ -25,6 +25,7 @@ sub store {
 # Run the crawler
 sub run {
   my $self = shift;
+  my $single_page = shift;
 
   # Get the application
   my $app = $self->app;
@@ -87,17 +88,25 @@ sub run {
 
   $spider->on(
     error => sub {
-      my ($msg, $job) = @_;
+      my ($self, $msg, $job) = @_;
       say $msg;
-      say "Re-scheduled";
       $spider->requeue($job);
     }
   );
 
-  # Get all pages and crawl
-  my $pages = $app->config('pages') // [];
-  foreach (@$pages) {
-    $spider->enqueue($_->{url})
+
+  # Only work on a single page
+  if ($single_page) {
+    $spider->enqueue($single_page);
+  }
+
+  # Work on the config list
+  else {
+    # Get all pages and crawl
+    my $pages = $app->config('pages') // [];
+    foreach (@$pages) {
+      $spider->enqueue($_->{url})
+    };
   };
 
   # Start crawling
