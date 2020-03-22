@@ -12,6 +12,7 @@ RUN mkdir /usr/src/app
 RUN mkdir /usr/src/tempapp
 COPY . /usr/src/tempapp/
 RUN cd /usr/src/tempapp/crawler
+RUN ls
 RUN cpanm -v utf8::all
 RUN cpanm -v HTTP::Tiny
 RUN cpanm -v HTML::Restrict

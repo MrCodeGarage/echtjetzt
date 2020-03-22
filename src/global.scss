@@ -42,6 +42,9 @@ body {
 
 app-home {
     background: transparent;
+    ion-content {
+        min-height: calc(100% - 160px);
+    }
 }
 
 app-root {

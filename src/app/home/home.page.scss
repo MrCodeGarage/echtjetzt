@@ -1,9 +1,9 @@
     ion-content {
-        --background: transparent!important;
+        --background: var(--ki-grey)!important;
     }
     
     ion-header {
-        background: transparent!important;
+        background: var(--ki-grey)!important;
     }
     
     @media (min-width: 801px) {
@@ -52,7 +52,7 @@
             }
         }
         ion-footer {
-            background: #F0F0F0!important;
+            background: var(transparent)!important;
             >div {
                 display: flex;
                 justify-content: space-around;
@@ -85,7 +85,10 @@
         }
         .dekstopmain {
             >div {
-                height: 100%;
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                height: auto;
                 z-index: 15;
                 width: 100%;
             }
@@ -180,7 +183,7 @@
     
     @media (max-width: 800px) {
         ion-footer {
-            background: #F0F0F0!important;
+            background: var(transparent)!important;
             >div {
                 display: flex;
                 justify-content: space-around;
