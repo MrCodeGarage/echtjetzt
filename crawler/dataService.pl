@@ -1,10 +1,16 @@
 #!/usr/bin/env perl
+use FindBin;
+BEGIN {
+  unshift @INC, "$FindBin::Bin/lib"
+};
+
 use Mojolicious::Lite;
 use Mojo::Base -signatures;
 use DataService::Clean::Base;
 use Mojo::JSON qw'encode_json decode_json';
 use MongoDB;
 use Mojo::CSV;
+
 
 our $VERSION = 0.01;
 
