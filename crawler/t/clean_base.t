@@ -26,6 +26,19 @@ my $dom = Mojo::DOM->new(<<HTML);
 </html>
 HTML
 
+my $dumm = <<TEXT;
+Example
+Ich bin Inhalt!
+Nix führt intern, aber http://example.com/kaffee?query=kanne und dies http://external.example.com extern weiter.
+a
+b
+TEXT
+
+is_deeply(DataService::Clean::Base::get_plain_links($dumm), [
+  "http://example.com/kaffee?query=kanne",
+  "http://external.example.com",
+]);
+
 # Get meta
 my $obj = DataService::Clean::Base::get_meta({
   url => 'http://example.com',
