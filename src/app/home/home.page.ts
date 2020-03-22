@@ -47,7 +47,7 @@ export class HomePage {
         if(isURL === true){
           this.mo.colObsJob.insert({ 
             "text" : this.inputText, 
-            "isHTML" : true, 
+            "isUrl" : true, 
             "link" : this.inputText, 
             "ans" : null, 
             "status" : 1.0,
@@ -59,7 +59,7 @@ export class HomePage {
         }else{
           this.mo.colObsJob.insert({ 
             "text" : this.inputText, 
-            "isHTML" : false, 
+            "isUrl" : false, 
             "link" : "", 
             "ans" : null, 
             "status" : 2.0,
