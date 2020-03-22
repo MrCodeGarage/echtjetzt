@@ -52,6 +52,14 @@ sub find_meta_tag($params, $value) {
   });
 }
 
+sub get_plain_links($text) {
+  my @links;
+  while ($text =~ m{https?://\S+[^;:,.!?](?=>$|\s)}g) {
+    push @links, $&;
+  }
+  return \@links;
+}
+
 sub get_meta($params) {
   my $date = "";
   # determine date
