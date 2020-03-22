@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use utf8;
 use utf8::all;
-# use open qw( :encoding(UTF-8) :std );
+use open qw( :encoding(UTF-8) :std );
 
 # binmode(STDIN,":utf8");
 # binmode(STDERR,":utf8");
@@ -31,7 +31,7 @@ sub get_document($url_string, $recursive) {
   my $url = URI->new($url_string);
   my $response = $ua->get($url);
   if ($response->{success}) {
-    my $tree = Mojo::DOM -> new($response->{content});
+    my $tree = Mojo::DOM ->new($response->{content});
     my $doc = get_main(get_meta({
           url => $url,
           html => $tree,
@@ -48,8 +48,20 @@ sub get_document($url_string, $recursive) {
 sub find_meta_tag($params, $value) {
   $value = "\Q$value";
   $params->{html}->find("meta")->first(sub {
-    $_->attr("http-equiv") =~ m/$value/i || $_->attr("name") =~ m/$value/i;
+    if (defined $_->attr("http-equiv")) {
+      return $_->attr("http-equiv") =~ m/$value/i
+    } elsif (defined $_->attr("name")) {
+      return $_->attr("name") =~ m/$value/i;
+    }
   });
+}
+
+sub get_plain_links($text) {
+  my @links;
+  while ($text =~ m{https?://\S+[^;:,.!?](?=>$|\s)}g) {
+    push @links, $&;
+  }
+  return \@links;
 }
 
 sub get_meta($params) {
@@ -84,15 +96,16 @@ sub get_meta($params) {
   if ($params->{base_url} eq "") {
     $params->{base_url} = simple_base($params->{url});
   }
-  my $base = $params->{base_url};
-
   return $params;
 }
 
 # use to determine base path of URL, independently of <base>
 sub simple_base($url) {
-  $url =~ m{http://.*/};
-  return $& // $url;
+  if ($url =~ m{https?://.*/}) {
+  return $&
+  } else {
+    return $url;
+  }
 }
 
 # local link is anything sharing the same base URL
@@ -105,15 +118,19 @@ sub is_local_link($url_string, $base) {
 }
 
 sub is_www_link($url) {
-  return ($url =~ m{^https?:}) || ($url !~ m{^[^:]+:})
+  return ($url =~ m{^https?:}) || ($url !~ m{^[a-z]++:})
 }
 
 # get links
 sub get_links($params) {
-  my $link_candidates = $params->{html}->find("a")->map(attr => "href")->compact()->grep(\&is_www_link);
+  my $link_candidates = $params->{html}
+  ->find("a")->map(attr => "href")->compact()
+  ->grep(\&is_www_link)
+  ->map(sub {
+    return URI->new($_)->abs($params->{base_url})->as_string();
+    });
   my $external = $link_candidates->grep(sub{!is_local_link($_, $params->{base_url})})->compact();
   $params->{external_links} = $external->to_array();
-  dump $params->{external_links};
   $params->{sources} = $external->map(sub {URI->new($_)->host()});
   $params->{internal_links} = $link_candidates->map(sub{is_local_link($_, $params->{base_url})})->compact()->to_array();
   return $params;
