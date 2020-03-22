@@ -1,22 +1,3 @@
-#===============================================================================
-#
-#         FILE: crawl_infektionsschutz.pl
-#
-#        USAGE: ./crawl_infektionsschutz.pl
-#
-#  DESCRIPTION:
-#
-#      OPTIONS: ---
-# REQUIREMENTS: ---
-#         BUGS: ---
-#        NOTES: ---
-#       AUTHOR: Bernhard Fisseni (bfi), fisseni@ids-mannheim.de
-# ORGANIZATION: Leibniz-Institut für Deutsche Sprache
-#      VERSION: 1.0
-#      CREATED: 2020-03-21, 17:03:33 (CET)
-#     REVISION: ---
-#  Last Change: 2020-03-21, 23:32:27 (+01:00)
-#===============================================================================
 package DataService::Clean::Base;
 
 use strict;
@@ -61,6 +42,7 @@ sub get_document($url_string, $recursive) {
       my $doc = get_main(get_meta({
               url => $url,
               html => $tree,
+              base_url => "",
               external_links => [],
               internal_links => [],
               metadata => {},
@@ -73,15 +55,38 @@ sub get_document($url_string, $recursive) {
 
 sub get_meta($params) {
     $params->{metadata}->{title} = $params->{html}->at("title")->all_text();
+
+    # if set in HTML file, get //base/@href
+    my $base_el = $params->{html}->at("base");
+    if (defined $base_el) {
+        $params->{base_url} = $base_el->attr("href");
+    }
+    # if <base> is messy or unset, play with URL
+    if ($params->{base_url} eq "") {
+        $params->{base_url} = simple_base($params->{url});
+    }
+    my $base = $params->{base_url};
+    say STDERR "BASE_URL: $base";
+
+
     return $params;
 }
 
-sub get_base($url) {
-    return $url->scheme() . "://" . $url->host();
+# use to determine base path of URL, independently of <base>
+sub simple_base($url) {
+    say STDERR "URL: $url";
+    $url =~ m{http://.*/};
+    return $& // $url;
 }
 
-sub is_local_link($url_string, $domain) {
-    my $base = get_base(URI->new($domain));
+sub get_base_url($params) {
+    say STDERR "HERE";
+    say STDERR "URL: " . $params->{url};
+    return $params;
+}
+
+# local link is anything sharing the same base URL
+sub is_local_link($url_string, $base) {
     my $rel_url = URI->new($url_string)->rel($base);
     my $url = URI->new($url_string)->abs($base);
     if ($url =~ m/$base/) {
@@ -89,15 +94,18 @@ sub is_local_link($url_string, $domain) {
     }
 }
 
+sub is_www_link($url) {
+    return ($url =~ m{^https?:}) || ($url !~ m{^[^:]+:})
+}
 
 # get links
 sub get_links($params) {
-    my $external = $params->{html}
-        ->find("a")->map(attr => "href")->grep(sub{!is_local_link($_, $params->{url})})->compact();
+    my $link_candidates = $params->{html}->find("a")->map(attr => "href")->compact()->grep(\&is_www_link);
+    my $external = $link_candidates->grep(sub{!is_local_link($_, $params->{base_url})})->compact();
     $params->{external_links} = $external->to_array();
+    dump $params->{external_links};
     $params->{sources} = $external->map(sub {URI->new($_)->host()});
-    $params->{internal_links} = $params->{html}
-        ->find("a")->map(attr => "href")->map(sub{is_local_link($_, $params->{url})})->compact()->to_array();
+    $params->{internal_links} = $link_candidates->map(sub{is_local_link($_, $params->{base_url})})->compact()->to_array();
     return $params;
 }
 

@@ -9,12 +9,13 @@ our $VERSION = 0.01;
 # Register cleanup subroutines
 our %cleaner = (
   meta  => \&DataService::Clean::Base::get_meta,
+  base => \&DataService::Clean::Base::get_base_url,
   main  => \&DataService::Clean::Base::get_main,
   links => \&DataService::Clean::Base::get_links
 );
 
 # Default cleanup cascade
-our $default = ['meta','main', 'links'];
+our $default = ['meta', 'base', 'main', 'links'];
 
 plugin 'Config' => {
   default => {
@@ -125,6 +126,7 @@ helper 'clean' => sub ($c, $cascade, $res) {
   # Initialize cleaned data
   my $data = {
     url => $res->{url},
+    base_url => "",
     header => $res->{header},
     html => Mojo::DOM->new($res->{body}),
     metadata => {},

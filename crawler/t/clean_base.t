@@ -28,6 +28,7 @@ HTML
 # Get meta
 my $obj = DataService::Clean::Base::get_meta({
   url => 'http://example.com',
+  base_url => "",
   html => $dom,
   external_links => [],
   internal_links => [],
