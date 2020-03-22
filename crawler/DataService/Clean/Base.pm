@@ -66,15 +66,12 @@ sub get_meta($params) {
         $params->{base_url} = simple_base($params->{url});
     }
     my $base = $params->{base_url};
-    say STDERR "BASE_URL: $base";
-
 
     return $params;
 }
 
 # use to determine base path of URL, independently of <base>
 sub simple_base($url) {
-    say STDERR "URL: $url";
     $url =~ m{http://.*/};
     return $& // $url;
 }
@@ -123,6 +120,10 @@ sub finish($params) {
             strong => [],
             em => [],
             main => [],
+            h1 => [],
+            h2 => [],
+            h3 => [],
+            h4 => [],
         }
     );
     $params->{html}->find("script,stylesheet")->each(sub { $_->remove()});
@@ -130,10 +131,10 @@ sub finish($params) {
     # normalize <i>/<b>
     $params->{html}->find("i")->each(sub {$_->tag("em")});
     $params->{html}->find("b")->each(sub {$_->tag("strong")});
-
+    $params->{html}->find("b")->each(sub {$_->tag("strong")});
     # remove empty elements
     $params->{html}->find("*")->each(sub {if ($_->all_text() =~ m/\A\s*\Z/m){ $_->remove()}});
-
+    $params->{html}->find("li,p,div,h1,h2,h3,h4,h5,h6,td,th")->each(sub {$_->append_content(" ")});
     $params->{text} = normalize_space(
         $plain->process($params->{html}->to_string()));
 
