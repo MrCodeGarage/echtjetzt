@@ -38,13 +38,13 @@
 
             </div>
             <div style="    margin-left: 0px;" class="styleOutput" *ngIf="switchResult == 3">
-                <div>
-                    <div class="radialProgressBar progress-{{answer.percent}}">
+                <div style="margin-top: 20px;">
+                    <div style="    margin-top: 0px;" class="radialProgressBar progress-{{answer.percent}}">
                         <div class="overlay">{{answer.percent}}%</div>
                     </div>
                 </div>
-                <div>
-                    <div style="    margin-bottom: 55px;">
+                <div style="margin-top: 20px;">
+                    <div style="    margin-bottom: 25px;">
                         Diese Nachricht ist zu {{answer.percent}}% kein Fake. Hier sind ähnliche Artikel aus vertrauenswürdigen Quellen:
                     </div>
                     <div class="link" *ngFor="let item of answer.quellen">
@@ -54,7 +54,9 @@
 
                             </div>
                         </div>
-                        <label>Stand {{item.stand | date:'dd.MM.yyyy HH:mm'}}</label>
+                        <label style="    text-align: right;
+                        display: inline-block;
+                        width: 100%;">Stand {{item.stand | date:'dd.MM.yyyy HH:mm'}}</label>
                     </div>
                 </div>
 
@@ -186,19 +188,20 @@
             <h1>Über Uns</h1>
             <div>
                 <meta charset="UTF-8">
-                <div style="margin-bottom: 20px;">
+                <div style="margin-bottom: 0px;">
                     Du stößt häufig auf Nachrichten, bei denen Du nicht sicher bist, ob diese wahr sind? In Zeiten von <i>Fake News</i> kann man sich mittlerweile bei vielen Posts und Artikeln nicht mehr sicher sein. Um diese Unsicherheit zu beseitigen
                     haben wir <b>EchtJetzt</b> geschaffen - eine Plattform für jeden, der schnell und einfach ohne viel Schnick-Schnack überprüfen möchte, ob ein Artikel eher wahr ist, oder eher zur Kategorie Fake News zählt.
                 </div>
                 ​
-                <div style="margin-bottom: 20px;">
-                    Wer sind wir denn eigentlich?<br> Wir sind eine Gruppe aus ExpertInnen aus Softwareentwicklung, Data Science, Design und Wissenschaft die ihre Superkräfte zum &#35;WirvsVirus 2020 bündelt, um Dir in Zeiten von Corona die Möglichkeit
+                <div style="margin-bottom: 0px;">
+                    <h2 style="    margin: 0px;font-size:20px;font-weight:bold">Wer sind wir denn eigentlich?</h2> <br> Wir sind eine Gruppe aus ExpertInnen aus Softwareentwicklung, Data Science, Design und Wissenschaft die ihre Superkräfte zum &#35;WirvsVirus 2020 bündelt, um Dir in Zeiten von Corona die Möglichkeit
                     zu geben Dich besser zu informieren.</div>
                 ​
-                <div style="margin-bottom: 20px;">
-                    Wie ermitteln wir was <i>wahr</i> und was <i>fake</i> ist?<br> In diesen unsicheren Zeiten sorgen wir für größtmögliche Transparenz. Das machen wir nicht nur in unserer App sondern auch in der Art wie wir unser Vorgehen kommunizieren.
-                    So kannst Du dir selbst Gedanken machen, ob Du unserem Score vertrauen kannst. Unsere Datenbank erhält regelmäßig Artikel aus vertrauenswürdigen Quellen. Auf der anderen Seite füttern wir unsere KI bewusst mit Fake News damit sie lernt
-                    Echtes von Falschem zu unterscheiden. Für die Techies unter euch: Das Stichwort lautet NLP mittels
+                <div style="margin-bottom: 0px;">
+                    <h2 style="    margin: 0px;font-size:20px;font-weight:bold">Wie ermitteln wir was wahr und was fake ist?</h2>
+                    <br> In diesen unsicheren Zeiten sorgen wir für größtmögliche Transparenz. Das machen wir nicht nur in unserer App sondern auch in der Art wie wir unser Vorgehen kommunizieren. So kannst Du dir selbst Gedanken machen, ob Du unserem
+                    Score vertrauen kannst. Unsere Datenbank erhält regelmäßig Artikel aus vertrauenswürdigen Quellen. Auf der anderen Seite füttern wir unsere KI bewusst mit Fake News damit sie lernt Echtes von Falschem zu unterscheiden. Für die Techies
+                    unter euch: Das Stichwort lautet NLP mittels
                     <a href="https://en.wikipedia.org/wiki/BERT_(language_model)/">BERT</a>. Diese Artikel nutzen wir zusätzlich, um euch Quellen vorzuschlagen, die möglichst ähnlich zum übersendeten Artikel sind und gleichzeitig aus gesicherten Quellen
                     stammen.
                 </div>
@@ -220,7 +223,7 @@
                 </p>
                 <p> <strong>Vertreten durch: </strong><br> Dominik Bruckner<br>
                 </p>
-                <p><strong>Kontakt:</strong> <br> Telefon: %2B49-17634135164<br> E-Mail: <a href='mailto:bruckner.dominik@gmx.de'>bruckner.dominik@gmx.de</a><br>
+                <p><strong>Kontakt:</strong> <br> Telefon: +49-17634135164<br> E-Mail: <a href='mailto:bruckner.dominik@gmx.de'>bruckner.dominik@gmx.de</a><br>
                 </p>
                 <p><strong>Haftungsausschluss: </strong><br><br><strong>Haftung für Inhalte</strong><br><br> Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch
                     keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet,
