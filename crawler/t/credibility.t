@@ -3,7 +3,7 @@ use Mojo::File 'curfile';
 use Test::More;
 use Test::Mojo;
 
-my $script = curfile->dirname->sibling('dataService');
+my $script = curfile->dirname->sibling('dataService.pl');
 
 my $t = Test::Mojo->new($script => {
   pages => [

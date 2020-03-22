@@ -3,7 +3,7 @@ use Test::More;
 use Test::Mojo;
 use Mojo::File qw!path curfile!;
 
-my $script = curfile->dirname->sibling('dataService');
+my $script = curfile->dirname->sibling('dataService.pl');
 
 my $mount_point = '';
 

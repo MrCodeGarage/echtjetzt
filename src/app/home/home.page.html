@@ -44,17 +44,20 @@
                     </div>
                 </div>
                 <div>
-                    Dieses Information ist zu {{answer.percent}}% vertrauens-würdig, weil sie mit Folgenden Quellen übereinstimmt:
-                </div>
-                <div class="link" *ngFor="let item of answer.quellen">
-                    <h2><span>Quelle {{item.quelle}} ({{item.link}})</span></h2>
                     <div>
-                        <div [style.width.%]="answer.percent">
-
-                        </div>
+                        Dieses Information ist zu {{answer.percent}}% vertrauens-würdig, weil sie mit Folgenden Quellen übereinstimmt:
                     </div>
-                    <label>Stand {{item.stand | date:'dd.MM.yyyy HH:mm'}}</label>
+                    <div class="link" *ngFor="let item of answer.quellen">
+                        <h2><span>Quelle {{item.quelle}} ({{item.link}})</span></h2>
+                        <div>
+                            <div [style.width.%]="answer.percent">
+
+                            </div>
+                        </div>
+                        <label>Stand {{item.stand | date:'dd.MM.yyyy HH:mm'}}</label>
+                    </div>
                 </div>
+
 
                 <ion-button class="cpm" fill="clear">
                     <i class="mdi mdi-content-copy mdi-24px"></i>
