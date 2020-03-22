@@ -4,7 +4,7 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-  VERSION_FROM => 'dataService',
+  VERSION_FROM => 'dataService.pl',
   NAME => 'dataService',
   ABSTRACT => 'Data aggregation server',
   PREREQ_PM => {
