@@ -82,6 +82,9 @@ helper init_config => sub ($c) {
 
   # Add cleaner references
   $app->config(cleaner => \%cleaner);
+
+  # (Re-)add page references
+  $app->config(pages => $pages);
 };
 
 

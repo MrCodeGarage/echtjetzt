@@ -63,6 +63,8 @@ sub run {
 
       # Clean the data
       my $data = $app->clean(['meta','main', 'links'], $json);
+      my $credible = Mojo::URL->new($job->url)->host;
+      $data->{cred} = $credible_hash->{$credible} // 0;
 
       # Store the data
       $self->store($fh, $data);
@@ -72,6 +74,8 @@ sub run {
         # Check if the job is a known host
         my $credible = Mojo::URL->new($link)->host;
 
+        # TODO:
+        #   Credible may decide between www. and not
         if (exists $credible_hash->{$credible}
           && $recursively->{$credible} // 0) {
 
@@ -90,16 +94,13 @@ sub run {
     }
   );
 
-  # TEMP:
+  # Get all pages and crawl
+  my $pages = $app->config('pages') // [];
+  foreach (@$pages) {
+    $spider->enqueue($_->{url})
+  };
 
-  # $spider->enqueue("http://schluesselkindblog.com");
-  $spider->enqueue("http://blauerbote.com");
-  $spider->enqueue("http://blauerbote.com/2020/03/21/selbstzerstoererisch-professor-bhakdi-ruft-zu-sofortigem-stopp-der-anti-corona-massnahmen-der-regierung-auf/");
-  $spider->enqueue("https://smopo.ch/ansammlungen-von-mehr-als-fuenf-personen-strikt-verboten/");
-  $spider->enqueue("http://www.truth24.net/mehr-menschen-ohne-obdach-es-gibt-noch-platz-fuer-fluechtlinge/");
-  $spider->enqueue("http://www.rapefugees.net/gruppenvergewaltigung-essen-vertuscht-lauenburger-gang-ist-ein-grosser-muslimclan/");
-  # $spider->enqueue('https://www.infektionsschutz.de/coronavirus/');
-  # $spider->enqueue('https://www.bmi.bund.de/SharedDocs/faqs/DE/themen/bevoelkerungsschutz/coronavirus/coronavirus-faqs.html');
+  # Start crawling
   $spider->crawl;
 
   $fh->close;
