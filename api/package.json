@@ -12,7 +12,7 @@
         "bcrypt": "^3.0.8",
         "fibers": "^4.0.2",
         "isomorphic-fetch": "^2.2.1",
-        "jquery": "^3.4.1",
+        "jquery": "^3.5.0",
         "meteor-node-stubs": "^1.0.0",
         "meteor-rxjs": "^0.4.14",
         "moment": "^2.24.0",
