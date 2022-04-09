@@ -42,7 +42,7 @@
         "meteor-client-bundler": "^0.6.0",
         "meteor-node-stubs": "^0.4.1",
         "meteor-rxjs": "^0.4.14",
-        "moment": "^2.24.0",
+        "moment": "^2.29.2",
         "ngx-lottie": "^5.4.0",
         "npm-force-resolutions": "0.0.3",
         "rxjs": "~6.5.1",
